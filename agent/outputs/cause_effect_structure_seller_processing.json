@@ -1,0 +1,48 @@
+{
+  "stage": "seller_processing",
+  "problem": "Seller Processing Delay",
+  "categories": [
+    {
+      "name": "Product Category",
+      "effect_size": 8.35,
+      "causes": [
+        {
+          "variable": "product_category_name_english",
+          "details": [
+            "Custom or made-to-order items",
+            "Fragile item extra packaging",
+            "Category-specific quality checks"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Temporal Pattern",
+      "effect_size": 2.45,
+      "causes": [
+        {
+          "variable": "seller_dayofweek",
+          "details": [
+            "Weekend processing lag",
+            "Reduced weekend staffing",
+            "Monday order backlog"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Physical Characteristics",
+      "effect_size": 2.27,
+      "causes": [
+        {
+          "variable": "product_weight_g",
+          "details": [
+            "Heavy item handling",
+            "Extra packaging materials needed",
+            "Multiple worker lifting requirement"
+          ]
+        }
+      ]
+    }
+  ]
+}

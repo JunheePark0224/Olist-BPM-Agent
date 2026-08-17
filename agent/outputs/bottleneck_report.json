@@ -1,0 +1,55 @@
+{
+  "total_orders": 95082,
+  "delay_rate_pct": 8.2,
+  "stage_summary": [
+    {
+      "stage": "carrier_delivery_time",
+      "stage_name": "Carrier Delivery",
+      "avg_hours": 224.74,
+      "share_pct": 74.21
+    },
+    {
+      "stage": "seller_processing_time",
+      "stage_name": "Seller Processing",
+      "avg_hours": 68.44,
+      "share_pct": 22.6
+    },
+    {
+      "stage": "payment_approval_time",
+      "stage_name": "Payment Approval",
+      "avg_hours": 9.65,
+      "share_pct": 3.19
+    }
+  ],
+  "delayed_vs_normal": [
+    {
+      "stage": "payment_approval_time",
+      "stage_name": "Payment Approval",
+      "delayed_avg_hours": 12.05,
+      "normal_avg_hours": 9.44,
+      "ratio": 1.28
+    },
+    {
+      "stage": "seller_processing_time",
+      "stage_name": "Seller Processing",
+      "delayed_avg_hours": 128.38,
+      "normal_avg_hours": 63.09,
+      "ratio": 2.03
+    },
+    {
+      "stage": "carrier_delivery_time",
+      "stage_name": "Carrier Delivery",
+      "delayed_avg_hours": 616.34,
+      "normal_avg_hours": 189.78,
+      "ratio": 3.25
+    }
+  ],
+  "bottleneck_policy": {
+    "min_share_pct": 15,
+    "min_delay_ratio": 1.5
+  },
+  "bottlenecks": [
+    "Carrier Delivery",
+    "Seller Processing"
+  ]
+}

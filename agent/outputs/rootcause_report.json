@@ -1,0 +1,41 @@
+{
+  "stages": [
+    {
+      "stage": "carrier_delivery",
+      "top_causes": [
+        {
+          "category": "Geography",
+          "effect_size_pct": 20.19,
+          "explanation": "Customer state accounts for the largest share of variance in carrier delivery time, reflecting differences in distance, regional infrastructure, and carrier coverage across states."
+        },
+        {
+          "category": "Seasonality",
+          "effect_size_pct": 5.77,
+          "explanation": "The month in which the carrier handles the shipment contributes a smaller but significant share of delivery time variance, likely due to seasonal demand fluctuations and operational capacity changes."
+        }
+      ],
+      "summary": "Carrier delivery delays are primarily driven by geographic factors related to the customer's state, which explain over 20% of the variance, likely due to distance and regional logistics infrastructure disparities. Seasonal timing of carrier operations adds a secondary but notable effect, suggesting capacity and demand fluctuations throughout the year also impact delivery performance."
+    },
+    {
+      "stage": "seller_processing",
+      "top_causes": [
+        {
+          "category": "Product Category",
+          "effect_size_pct": 8.35,
+          "explanation": "Different product categories require varying handling, packaging, and preparation times, leading to significant variation in seller processing duration."
+        },
+        {
+          "category": "Temporal Pattern",
+          "effect_size_pct": 2.45,
+          "explanation": "The day of the week an order is placed affects seller staffing levels and warehouse operation schedules, causing processing delays especially around weekends."
+        },
+        {
+          "category": "Physical Characteristics",
+          "effect_size_pct": 2.27,
+          "explanation": "Heavier products require more time for packaging, handling, and preparation before dispatch, contributing to longer processing times."
+        }
+      ],
+      "summary": "The seller processing delay is primarily driven by product category differences, which account for the largest share of variance, followed by temporal patterns related to the day of order placement. Physical product characteristics, particularly weight, also play a smaller but notable role. Together these factors suggest that operational complexity tied to product type and handling requirements is the main bottleneck."
+    }
+  ]
+}

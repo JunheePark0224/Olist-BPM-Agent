@@ -1,0 +1,383 @@
+{
+  "slides": [
+    {
+      "type": "TitleSlide",
+      "main_title": "Olist E-Commerce",
+      "subtitle": "Delivery Process Bottleneck Analysis & Improvement Strategy",
+      "meta": "Executive Report | Target: 물류 운영 책임자 및 경영진",
+      "stat_cards": [
+        {
+          "value": "95,082 Orders",
+          "label": "Analyzed"
+        },
+        {
+          "value": "8.2%",
+          "label": "Delay Rate"
+        },
+        {
+          "value": "4 Scenarios",
+          "label": "Recommended"
+        }
+      ]
+    },
+    {
+      "type": "SummaryCardSlide",
+      "title": "Executive Summary",
+      "cards": [
+        {
+          "label": "Problem",
+          "value": "8.2%",
+          "caption": "배송 지연율"
+        },
+        {
+          "label": "Cause",
+          "value": "Carrier Delivery",
+          "caption": "핵심 병목 구간"
+        },
+        {
+          "label": "Top Priority",
+          "value": "S1",
+          "caption": "RJ Carrier Delivery Speed-up"
+        },
+        {
+          "label": "Effect Size",
+          "value": "20.19%",
+          "caption": "1순위 원인 설명력"
+        }
+      ]
+    },
+    {
+      "type": "BigNumberSlide",
+      "title": "Business Problem",
+      "big_number": "7,797건",
+      "context": "전체 95,082건 주문 중",
+      "highlight": "배송 지연 발생 (지연율 8.2%)",
+      "table": {
+        "headers": [
+          "Stage",
+          "Delayed (h)",
+          "Normal (h)",
+          "Ratio"
+        ],
+        "rows": [
+          [
+            "Payment Approval",
+            12.05,
+            9.44,
+            "1.28x"
+          ],
+          [
+            "Seller Processing",
+            128.38,
+            63.09,
+            "2.03x"
+          ],
+          [
+            "Carrier Delivery",
+            616.34,
+            189.78,
+            "3.25x"
+          ]
+        ]
+      },
+      "footnote": "Business Risk: 고객 경험 저하 · 브랜드 신뢰도 하락 · 운영 비용 증가"
+    },
+    {
+      "type": "ImageSlide",
+      "title": "Process Modeling (BPMN)",
+      "images": [
+        {
+          "path": "images/bpmn.png",
+          "caption": null
+        }
+      ],
+      "caption": "각 구간별 병목 발생 가능성을 가설로 설정 → Bottleneck Detection으로 검증"
+    },
+    {
+      "type": "KPIDashboardSlide",
+      "title": "Bottleneck Detection",
+      "headline": "Carrier Delivery 74.21% of Total Lead Time | 지연 주문에서 3.25배 증가",
+      "kpi_cards": [
+        {
+          "value": "74.21%",
+          "label": "Carrier Delivery · avg 224.74h"
+        },
+        {
+          "value": "22.6%",
+          "label": "Seller Processing · avg 68.44h"
+        },
+        {
+          "value": "3.19%",
+          "label": "Payment Approval · avg 9.65h"
+        }
+      ],
+      "images": [
+        {
+          "path": "images/stage_time_chart.png",
+          "caption": null
+        },
+        {
+          "path": "images/delayed_vs_normal.png",
+          "caption": null
+        }
+      ]
+    },
+    {
+      "type": "ChartInsightSlide",
+      "layout": "left_chart_right_cards",
+      "title": "Root Cause Analysis — Carrier Delivery",
+      "subtitle": "1st Bottleneck | Lead Time 74.21%",
+      "images": [
+        {
+          "path": "images/effect_size_carrier_delivery.png",
+          "caption": null
+        }
+      ],
+      "insight_cards": [
+        {
+          "label": "Geography",
+          "value": "η²=20.19%",
+          "detail": "Customer state accounts for the largest share of variance in carrier delivery time, reflecting differences in distance, regional infrastructure, and carrier coverage across states."
+        },
+        {
+          "label": "Seasonality",
+          "value": "η²=5.77%",
+          "detail": "The month in which the carrier handles the shipment contributes a smaller but significant share of delivery time variance, likely due to seasonal demand fluctuations and operational capacity changes."
+        }
+      ],
+      "key_insight": "Carrier delivery delays are primarily driven by geographic factors related to the customer's state, which explain over 20% of the variance, likely due to distance and regional logistics infrastructure disparities. Seasonal timing of carrier operations adds a secondary but notable effect, suggesting capacity and demand fluctuations throughout the year also impact delivery performance."
+    },
+    {
+      "type": "ChartInsightSlide",
+      "layout": "left_chart_right_cards",
+      "title": "Root Cause Analysis — Seller Processing",
+      "subtitle": "2nd Bottleneck | Lead Time 22.6%",
+      "images": [
+        {
+          "path": "images/effect_size_seller_processing.png",
+          "caption": null
+        }
+      ],
+      "insight_cards": [
+        {
+          "label": "Product Category",
+          "value": "η²=8.35%",
+          "detail": "Different product categories require varying handling, packaging, and preparation times, leading to significant variation in seller processing duration."
+        },
+        {
+          "label": "Temporal Pattern",
+          "value": "η²=2.45%",
+          "detail": "The day of the week an order is placed affects seller staffing levels and warehouse operation schedules, causing processing delays especially around weekends."
+        },
+        {
+          "label": "Physical Characteristics",
+          "value": "η²=2.27%",
+          "detail": "Heavier products require more time for packaging, handling, and preparation before dispatch, contributing to longer processing times."
+        }
+      ],
+      "key_insight": "The seller processing delay is primarily driven by product category differences, which account for the largest share of variance, followed by temporal patterns related to the day of order placement. Physical product characteristics, particularly weight, also play a smaller but notable role. Together these factors suggest that operational complexity tied to product type and handling requirements is the main bottleneck."
+    },
+    {
+      "type": "DualImageSlide",
+      "title": "Cause-Effect Diagrams",
+      "images": [
+        {
+          "path": "images/cause_effect_diagram_carrier_delivery.png",
+          "caption": "Carrier Delivery"
+        },
+        {
+          "path": "images/cause_effect_diagram_seller_processing.png",
+          "caption": "Seller Processing"
+        }
+      ]
+    },
+    {
+      "type": "DataTableSlide",
+      "title": "Business Impact Simulation",
+      "subtitle": "전체 후보 — Effect Size + Impact Score",
+      "table": {
+        "headers": [
+          "Scenario",
+          "Effect Size",
+          "Impact Score"
+        ],
+        "rows": [
+          [
+            "customer_state=RJ",
+            20.19,
+            "788,027"
+          ],
+          [
+            "carrier_month=3.0",
+            5.77,
+            "740,331"
+          ],
+          [
+            "carrier_month=2.0",
+            5.77,
+            "571,326"
+          ],
+          [
+            "customer_state=BA",
+            20.19,
+            "515,586"
+          ],
+          [
+            "carrier_month=12.0",
+            5.77,
+            "380,005"
+          ],
+          [
+            "customer_state=RS",
+            20.19,
+            "349,653"
+          ],
+          [
+            "product_category_name_english=office_furniture",
+            8.35,
+            "295,903"
+          ],
+          [
+            "seller_dayofweek=4.0",
+            2.45,
+            "261,873"
+          ],
+          [
+            "seller_dayofweek=5.0",
+            2.45,
+            "258,042"
+          ],
+          [
+            "product_category_name_english=furniture_decor",
+            8.35,
+            "81,747"
+          ],
+          [
+            "product_category_name_english=computers_accessories",
+            8.35,
+            "59,686"
+          ],
+          [
+            "seller_dayofweek=3.0",
+            2.45,
+            "11,976"
+          ]
+        ]
+      },
+      "key_insight": "Root Cause의 설명력(Effect Size)과 Business Impact(Impact Score)는 다를 수 있다"
+    },
+    {
+      "type": "DataTableSlide",
+      "title": "Recommended Scenarios",
+      "table": {
+        "headers": [
+          "ID",
+          "Title",
+          "Effect Size",
+          "Impact Score"
+        ],
+        "rows": [
+          [
+            "S1",
+            "RJ Carrier Delivery Speed-up",
+            "20.19%",
+            "788,027"
+          ],
+          [
+            "S2",
+            "Office Furniture Processing Time Reduction",
+            "8.35%",
+            "295,903"
+          ],
+          [
+            "S3",
+            "Carnival Season Carrier Delay Mitigation",
+            "5.77%",
+            "1,311,657"
+          ],
+          [
+            "S4",
+            "End-of-Week Seller Processing Bottleneck",
+            "2.45%",
+            "519,915"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "ExperimentSlide",
+      "title": "A/B Test Design",
+      "subtitle": "S1: RJ Delivery Time Optimization",
+      "left_column": {
+        "primary_metric": "Delivery Delay Rate (%)",
+        "baseline": "13.6% (RJ 기준)",
+        "mde": "1.0%p → Target 12.6%",
+        "alpha_power": "α=0.05 / Power=0.8",
+        "sample_size": "28,749건 (그룹당 14,375건)",
+        "experiment_unit": "Fulfillment Center"
+      },
+      "right_column": {
+        "treatment": "배송 최적화 조치 적용 거점 (RJ 담당)",
+        "control": "기존 운영 유지 거점",
+        "success_criteria": [
+          "Primary Metric (Delivery Delay Rate) decreases by at least 1.0 percentage point",
+          "p_value < 0.05",
+          "Carrier Delivery Time (Secondary Metric) decreases",
+          "No deterioration in Guardrail Metrics"
+        ]
+      }
+    },
+    {
+      "type": "RoadmapSlide",
+      "title": "Implementation Roadmap",
+      "phases": [
+        {
+          "number": 1,
+          "label": "Analysis Complete",
+          "status": "Done",
+          "detail": "1~8단계 분석 완료"
+        },
+        {
+          "number": 2,
+          "label": "A/B Test",
+          "status": "Next",
+          "detail": "1순위 시나리오 실험 설계"
+        },
+        {
+          "number": 3,
+          "label": "Validation",
+          "status": "Pending",
+          "detail": "통계적 유의성 검증"
+        },
+        {
+          "number": 4,
+          "label": "Full Deployment",
+          "status": "Pending",
+          "detail": "전사 확대 적용"
+        }
+      ]
+    },
+    {
+      "type": "ClosingSlide",
+      "title": "Final Recommendation",
+      "paragraphs": [
+        "customer_state이 배송 지연의 가장 중요한 통계적 원인(effect size 20.19%)으로 확인되었습니다.",
+        "따라서 S1(RJ Carrier Delivery Speed-up)을 우선적으로 A/B Test를 통해 검증한 후, 효과가 확인되면 전사 확대 적용을 권고합니다."
+      ],
+      "callouts": [
+        {
+          "value": "74.21%",
+          "label": "Carrier Delivery 핵심 병목 비중"
+        },
+        {
+          "value": "20.19%",
+          "label": "customer_state Effect Size"
+        },
+        {
+          "value": "28,749건",
+          "label": "A/B Test 필요 샘플 수"
+        }
+      ]
+    }
+  ]
+}

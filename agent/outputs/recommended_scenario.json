@@ -1,0 +1,58 @@
+{
+  "recommended_scenarios": [
+    {
+      "variable": "customer_state",
+      "title": "RJ Carrier Delivery Speed-up",
+      "included_values": [
+        "customer_state=RJ"
+      ],
+      "impact_score": 788027.0,
+      "reason": "RJ shows the highest impact score among all state-level delivery delays, driven by a large order volume combined with significant excess delivery hours. No other state shares a common root cause to justify grouping.",
+      "expected_effect": "Reducing carrier delivery time in RJ could cut excess delivery hours by up to 20% for over 12,000 orders.",
+      "effect_size_pct": 20.19,
+      "priority": 1,
+      "id": "S1"
+    },
+    {
+      "variable": "product_category_name_english",
+      "title": "Office Furniture Processing Time Reduction",
+      "included_values": [
+        "product_category_name_english=office_furniture"
+      ],
+      "impact_score": 295903.0,
+      "reason": "Office furniture shows by far the highest seller processing time impact, distinct from other categories with no shared operational cause. It stands out as the single most impactful category to address.",
+      "expected_effect": "Streamlining seller processing for office furniture could reduce processing time by about 8.35% for 1,659 orders.",
+      "effect_size_pct": 8.35,
+      "priority": 2,
+      "id": "S2"
+    },
+    {
+      "variable": "carrier_month",
+      "title": "Carnival Season Carrier Delay Mitigation",
+      "included_values": [
+        "carrier_month=2.0",
+        "carrier_month=3.0"
+      ],
+      "impact_score": 1311657.0,
+      "reason": "February and March correspond to Brazil's Carnival season, which causes widespread logistics slowdowns nationwide, justifying their combination. Together they represent the largest impact among all monthly patterns.",
+      "expected_effect": "Proactive carrier capacity planning during Carnival could reduce delivery delays by roughly 5.8% across nearly 17,700 orders.",
+      "effect_size_pct": 5.77,
+      "priority": 3,
+      "id": "S3"
+    },
+    {
+      "variable": "seller_dayofweek",
+      "title": "End-of-Week Seller Processing Bottleneck",
+      "included_values": [
+        "seller_dayofweek=4.0",
+        "seller_dayofweek=5.0"
+      ],
+      "impact_score": 519915.0,
+      "reason": "Thursday and Friday represent consecutive end-of-week days where seller processing backlogs accumulate before the weekend, forming a coherent business pattern. Together they have the largest combined impact among weekday groups.",
+      "expected_effect": "Improving seller workflow efficiency on Thursdays and Fridays could cut processing delays by about 2.45% for over 25,900 orders.",
+      "effect_size_pct": 2.45,
+      "priority": 4,
+      "id": "S4"
+    }
+  ]
+}

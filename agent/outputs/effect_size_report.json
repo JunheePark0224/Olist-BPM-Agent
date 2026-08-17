@@ -1,0 +1,93 @@
+{
+  "stages": [
+    {
+      "stage": "Carrier Delivery",
+      "kpi_column": "carrier_delivery_time",
+      "effect_sizes": [
+        {
+          "variable": "customer_state",
+          "type": "categorical",
+          "f_stat": 1056.43,
+          "p_value": 0.0,
+          "effect_size_pct": 20.19
+        },
+        {
+          "variable": "seller_state",
+          "type": "categorical",
+          "f_stat": 21.27,
+          "p_value": 0.0,
+          "effect_size_pct": 0.41
+        },
+        {
+          "variable": "product_category_name_english",
+          "type": "categorical",
+          "f_stat": 10.5,
+          "p_value": 0.0,
+          "effect_size_pct": 0.68
+        },
+        {
+          "variable": "carrier_month",
+          "type": "categorical",
+          "f_stat": 604.0,
+          "p_value": 0.0,
+          "effect_size_pct": 5.77
+        },
+        {
+          "variable": "carrier_dayofweek",
+          "type": "categorical",
+          "f_stat": 57.71,
+          "p_value": 0.0,
+          "effect_size_pct": 0.32
+        },
+        {
+          "variable": "product_weight_g",
+          "type": "continuous",
+          "correlation": 0.0306,
+          "p_value": 0.0,
+          "effect_size_pct": 0.09
+        }
+      ]
+    },
+    {
+      "stage": "Seller Processing",
+      "kpi_column": "seller_processing_time",
+      "effect_sizes": [
+        {
+          "variable": "seller_state",
+          "type": "categorical",
+          "f_stat": 14.63,
+          "p_value": 0.0,
+          "effect_size_pct": 0.28
+        },
+        {
+          "variable": "product_category_name_english",
+          "type": "categorical",
+          "f_stat": 139.25,
+          "p_value": 0.0,
+          "effect_size_pct": 8.35
+        },
+        {
+          "variable": "seller_month",
+          "type": "categorical",
+          "f_stat": 151.75,
+          "p_value": 0.0,
+          "effect_size_pct": 1.51
+        },
+        {
+          "variable": "seller_dayofweek",
+          "type": "categorical",
+          "f_stat": 454.25,
+          "p_value": 0.0,
+          "effect_size_pct": 2.45
+        },
+        {
+          "variable": "product_weight_g",
+          "type": "continuous",
+          "correlation": 0.1506,
+          "p_value": 0.0,
+          "effect_size_pct": 2.27
+        }
+      ]
+    }
+  ]
+}

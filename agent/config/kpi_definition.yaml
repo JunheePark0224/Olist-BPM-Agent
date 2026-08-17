@@ -1,0 +1,55 @@
+# kpi_definition.yaml
+#
+# ② 전처리 단계에서 사용하는 KPI 정의 파일 (Human Input)
+# - base_table_file: 전처리 대상이 되는 단일 테이블 (base_table의 grain을 유지)
+# - processes: 프로세스 구간별 시작/종료 컬럼 (소요시간 KPI 자동 계산)
+# - delay_metric: 지연 여부를 판단하는 지표 (실제값 - 예상값, 양수 = 지연)
+#
+# base_table_file은 하드코딩하지 않고 여기서 지정한다.
+# preprocessing.py는 이 파일명을 그대로 읽어 로드한다.
+# base_table(테이블명)은 별도로 적지 않는다 — base_table_file의 stem으로
+# 자동 도출하면 data_understanding.py가 만드는 테이블명(파일명 그대로)과
+# 항상 일치가 보장되어, RCA 단계에서 join_engine을 쓸 때 이름 불일치로
+# 조인이 깨지는 문제를 원천적으로 방지한다.
+
+base_table_file: olist_orders_dataset.csv
+
+processes:
+  - name: Payment Approval
+    start: order_purchase_timestamp
+    end: order_approved_at
+    kpi_column: payment_approval_time
+    level: order  # 문서용 메타데이터. 현재 코드는 이 값을 읽지 않는다.
+                  # 이 KPI가 측정되는 단위(order/item/shipment 등)를 명시해
+                  # 향후 다른 이커머스 데이터셋에 적용할 때, feature의 단위가
+                  # 다르면(예: item-level) aggregation이 필요함을 알 수 있게
+                  # 남겨두는 확장 포인트다. 현재 구현은 노트북 분석을 그대로
+                  # 재현하는 것이 1순위이므로 aggregation 로직은 넣지 않았다.
+
+  - name: Seller Processing
+    start: order_approved_at
+    end: order_delivered_carrier_date
+    kpi_column: seller_processing_time
+    level: order
+
+  - name: Carrier Delivery
+    start: order_delivered_carrier_date
+    end: order_delivered_customer_date
+    kpi_column: carrier_delivery_time
+    level: order
+
+  - name: Total Delivery
+    start: order_purchase_timestamp
+    end: order_delivered_customer_date
+    kpi_column: total_delivery_time
+    is_total: true  # 구간(stage)이 아니라 전체 합계. Lead Time 비중 계산의 분모로만 사용.
+    level: order
+
+delay_metric:
+  actual: order_delivered_customer_date
+  estimated: order_estimated_delivery_date
+  kpi_column: delivery_delay
+
+bottleneck_policy:
+  min_share_pct: 15
+  min_delay_ratio: 1.5
