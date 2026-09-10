@@ -1,0 +1,28 @@
+﻿# Olist Business Process Optimization Agent
+#
+# 설치:  pip install -r requirements.txt
+#
+# 주의: graphviz 패키지는 Python 바인딩일 뿐이며, 시스템에 Graphviz 실행 파일이
+#       별도로 설치되어 있어야 cause-effect diagram이 생성된다.
+#       Windows: https://graphviz.org/download/  (설치 후 PATH 등록)
+#       macOS:   brew install graphviz
+#       Linux:   apt-get install graphviz
+
+# --- 데이터 처리 / 통계 ---
+pandas>=2.2
+numpy>=1.26
+scipy>=1.11
+pyarrow>=15.0          # pandas.read_parquet 엔진
+
+# --- 시각화 ---
+matplotlib>=3.8
+graphviz>=0.20         # cause-effect diagram (시스템 Graphviz 필요)
+pillow>=10.0           # ppt_generator의 이미지 크기 계산
+
+# --- 산출물 ---
+python-pptx>=0.6.23    # import 이름은 pptx
+PyYAML>=6.0            # import 이름은 yaml
+
+# --- LLM / MCP ---
+anthropic>=0.40        # ANTHROPIC_API_KEY 환경변수 필요
+mcp>=1.0               # server.py (Claude Desktop 연동)
