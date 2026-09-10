@@ -6,15 +6,15 @@
         {
           "category": "Geography",
           "effect_size_pct": 20.19,
-          "explanation": "Customer state accounts for the largest share of variance in carrier delivery time, reflecting differences in distance, regional infrastructure, and carrier coverage across states."
+          "explanation": "고객 지역(customer_state)에 따라 배송 시간이 크게 달라지며, 가장 빠른 SP 132.9h 대비 가장 느린 AP 589.5h로 약 4.4배 차이가 나타나 지리적 거리와 인프라 격차가 주요 병목 요인으로 확인됩니다."
         },
         {
           "category": "Seasonality",
           "effect_size_pct": 5.77,
-          "explanation": "The month in which the carrier handles the shipment contributes a smaller but significant share of delivery time variance, likely due to seasonal demand fluctuations and operational capacity changes."
+          "explanation": "배송 완료 월(carrier_month)에 따라 소요 시간이 달라지며, 가장 짧은 8월 148.5h 대비 가장 긴 3월 294.9h로 약 2.0배 차이가 나타나 특정 시기의 물량 집중이나 계절적 요인이 영향을 미친 것으로 보입니다."
         }
       ],
-      "summary": "Carrier delivery delays are primarily driven by geographic factors related to the customer's state, which explain over 20% of the variance, likely due to distance and regional logistics infrastructure disparities. Seasonal timing of carrier operations adds a secondary but notable effect, suggesting capacity and demand fluctuations throughout the year also impact delivery performance."
+      "summary": "Carrier Delivery 단계의 지연은 주로 고객이 위치한 지역(Geography)의 영향이 가장 크며, SP와 AP 간 4.4배에 달하는 배송시간 차이가 이를 뒷받침합니다. 계절적 요인(Seasonality) 또한 3월과 8월 간 2.0배 차이를 보이며 부차적인 원인으로 작용하고 있습니다."
     },
     {
       "stage": "seller_processing",
@@ -22,20 +22,20 @@
         {
           "category": "Product Category",
           "effect_size_pct": 8.35,
-          "explanation": "Different product categories require varying handling, packaging, and preparation times, leading to significant variation in seller processing duration."
+          "explanation": "제품 카테고리별 처리시간 편차가 가장 크며, cine_photo 36.2h → office_furniture 247.9h로 6.8배 차이가 나타나 카테고리 특성(조립·재고·맞춤화 여부)이 처리 지연의 핵심 요인으로 확인됩니다."
         },
         {
           "category": "Temporal Pattern",
           "effect_size_pct": 2.45,
-          "explanation": "The day of the week an order is placed affects seller staffing levels and warehouse operation schedules, causing processing delays especially around weekends."
+          "explanation": "요일별로는 월요일 57.3h 대비 토요일 91.8h로 1.6배 느려져, 주말 인력 감소 및 주문 적체가 처리 지연에 영향을 미치는 것으로 보입니다."
         },
         {
           "category": "Physical Characteristics",
           "effect_size_pct": 2.27,
-          "explanation": "Heavier products require more time for packaging, handling, and preparation before dispatch, contributing to longer processing times."
+          "explanation": "상품 무게(product_weight_g)는 처리시간과 약한 양의 상관관계(effect_size_pct 2.27%)를 보여, 무거운 상품일수록 포장 및 취급에 추가 시간이 소요될 가능성이 있습니다."
         }
       ],
-      "summary": "The seller processing delay is primarily driven by product category differences, which account for the largest share of variance, followed by temporal patterns related to the day of order placement. Physical product characteristics, particularly weight, also play a smaller but notable role. Together these factors suggest that operational complexity tied to product type and handling requirements is the main bottleneck."
+      "summary": "셀러 처리 단계 지연의 가장 큰 원인은 제품 카테고리 차이로, 가구류처럼 조립·맞춤이 필요한 상품이 사진용품 대비 최대 6.8배 오래 걸립니다. 요일별로는 주말(토요일) 처리 지연이 뚜렷하며, 상품 무게 또한 부차적인 영향을 미치는 것으로 나타났습니다. 종합적으로 카테고리 특성 관리와 주말 인력 운영 개선이 우선 과제로 판단됩니다."
     }
   ]
 }

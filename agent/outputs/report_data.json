@@ -37,7 +37,7 @@
         {
           "label": "Top Priority",
           "value": "S1",
-          "caption": "RJ Carrier Delivery Speed-up"
+          "caption": "RJ Carrier Delivery Time Reduction"
         },
         {
           "label": "Effect Size",
@@ -49,7 +49,7 @@
     {
       "type": "BigNumberSlide",
       "title": "Business Problem",
-      "big_number": "7,797건",
+      "big_number": "7,792건",
       "context": "전체 95,082건 주문 중",
       "highlight": "배송 지연 발생 (지연율 8.2%)",
       "table": {
@@ -137,15 +137,15 @@
         {
           "label": "Geography",
           "value": "η²=20.19%",
-          "detail": "Customer state accounts for the largest share of variance in carrier delivery time, reflecting differences in distance, regional infrastructure, and carrier coverage across states."
+          "detail": "고객 지역(customer_state)에 따라 배송 시간이 크게 달라지며, 가장 빠른 SP 132.9h 대비 가장 느린 AP 589.5h로 약 4.4배 차이가 나타나 지리적 거리와 인프라 격차가 주요 병목 요인으로 확인됩니다."
         },
         {
           "label": "Seasonality",
           "value": "η²=5.77%",
-          "detail": "The month in which the carrier handles the shipment contributes a smaller but significant share of delivery time variance, likely due to seasonal demand fluctuations and operational capacity changes."
+          "detail": "배송 완료 월(carrier_month)에 따라 소요 시간이 달라지며, 가장 짧은 8월 148.5h 대비 가장 긴 3월 294.9h로 약 2.0배 차이가 나타나 특정 시기의 물량 집중이나 계절적 요인이 영향을 미친 것으로 보입니다."
         }
       ],
-      "key_insight": "Carrier delivery delays are primarily driven by geographic factors related to the customer's state, which explain over 20% of the variance, likely due to distance and regional logistics infrastructure disparities. Seasonal timing of carrier operations adds a secondary but notable effect, suggesting capacity and demand fluctuations throughout the year also impact delivery performance."
+      "key_insight": "Carrier Delivery 단계의 지연은 주로 고객이 위치한 지역(Geography)의 영향이 가장 크며, SP와 AP 간 4.4배에 달하는 배송시간 차이가 이를 뒷받침합니다. 계절적 요인(Seasonality) 또한 3월과 8월 간 2.0배 차이를 보이며 부차적인 원인으로 작용하고 있습니다."
     },
     {
       "type": "ChartInsightSlide",
@@ -162,20 +162,20 @@
         {
           "label": "Product Category",
           "value": "η²=8.35%",
-          "detail": "Different product categories require varying handling, packaging, and preparation times, leading to significant variation in seller processing duration."
+          "detail": "제품 카테고리별 처리시간 편차가 가장 크며, cine_photo 36.2h → office_furniture 247.9h로 6.8배 차이가 나타나 카테고리 특성(조립·재고·맞춤화 여부)이 처리 지연의 핵심 요인으로 확인됩니다."
         },
         {
           "label": "Temporal Pattern",
           "value": "η²=2.45%",
-          "detail": "The day of the week an order is placed affects seller staffing levels and warehouse operation schedules, causing processing delays especially around weekends."
+          "detail": "요일별로는 월요일 57.3h 대비 토요일 91.8h로 1.6배 느려져, 주말 인력 감소 및 주문 적체가 처리 지연에 영향을 미치는 것으로 보입니다."
         },
         {
           "label": "Physical Characteristics",
           "value": "η²=2.27%",
-          "detail": "Heavier products require more time for packaging, handling, and preparation before dispatch, contributing to longer processing times."
+          "detail": "상품 무게(product_weight_g)는 처리시간과 약한 양의 상관관계(effect_size_pct 2.27%)를 보여, 무거운 상품일수록 포장 및 취급에 추가 시간이 소요될 가능성이 있습니다."
         }
       ],
-      "key_insight": "The seller processing delay is primarily driven by product category differences, which account for the largest share of variance, followed by temporal patterns related to the day of order placement. Physical product characteristics, particularly weight, also play a smaller but notable role. Together these factors suggest that operational complexity tied to product type and handling requirements is the main bottleneck."
+      "key_insight": "셀러 처리 단계 지연의 가장 큰 원인은 제품 카테고리 차이로, 가구류처럼 조립·맞춤이 필요한 상품이 사진용품 대비 최대 6.8배 오래 걸립니다. 요일별로는 주말(토요일) 처리 지연이 뚜렷하며, 상품 무게 또한 부차적인 영향을 미치는 것으로 나타났습니다. 종합적으로 카테고리 특성 관리와 주말 인력 운영 개선이 우선 과제로 판단됩니다."
     },
     {
       "type": "DualImageSlide",
@@ -189,82 +189,97 @@
           "path": "images/cause_effect_diagram_seller_processing.png",
           "caption": "Seller Processing"
         }
-      ]
+      ],
+      "footnote": "※ 카테고리와 η²는 ④단계 계산값. 각 카테고리 아래의 세부 원인(details)은 LLM이 도메인 지식으로 생성한 가설이며 이 데이터로 검증되지 않았음. 인과 판단이 필요한 산출물은 자동화 대상에서 제외한다는 원칙에 따라 검증 없이 게시함."
     },
     {
       "type": "DataTableSlide",
-      "title": "Business Impact Simulation",
-      "subtitle": "전체 후보 — Effect Size + Impact Score",
+      "title": "Impact Score Ranking",
+      "subtitle": "전체 후보 — Effect Size(원인의 설명력) + Impact Score(개선 시 기대 효과)",
       "table": {
         "headers": [
           "Scenario",
+          "Orders",
           "Effect Size",
           "Impact Score"
         ],
         "rows": [
           [
-            "customer_state=RJ",
-            20.19,
+            "고객 주(州) = RJ",
+            "12,210건",
+            "20.19%",
             "788,027"
           ],
           [
-            "carrier_month=3.0",
-            5.77,
+            "배송 월 = 3월",
+            "9,706건",
+            "5.77%",
             "740,331"
           ],
           [
-            "carrier_month=2.0",
-            5.77,
+            "배송 월 = 2월",
+            "7,966건",
+            "5.77%",
             "571,326"
           ],
           [
-            "customer_state=BA",
-            20.19,
+            "고객 주(州) = BA",
+            "3,210건",
+            "20.19%",
             "515,586"
           ],
           [
-            "carrier_month=12.0",
-            5.77,
+            "배송 월 = 12월",
+            "6,016건",
+            "5.77%",
             "380,005"
           ],
           [
-            "customer_state=RS",
-            20.19,
+            "고객 주(州) = RS",
+            "5,260건",
+            "20.19%",
             "349,653"
           ],
           [
-            "product_category_name_english=office_furniture",
-            8.35,
+            "상품 카테고리 = Office Furniture",
+            "1,659건",
+            "8.35%",
             "295,903"
           ],
           [
-            "seller_dayofweek=4.0",
-            2.45,
+            "승인 요일 = 금요일",
+            "14,119건",
+            "2.45%",
             "261,873"
           ],
           [
-            "seller_dayofweek=5.0",
-            2.45,
+            "승인 요일 = 토요일",
+            "11,800건",
+            "2.45%",
             "258,042"
           ],
           [
-            "product_category_name_english=furniture_decor",
-            8.35,
+            "상품 카테고리 = Furniture Decor",
+            "8,053건",
+            "8.35%",
             "81,747"
           ],
           [
-            "product_category_name_english=computers_accessories",
-            8.35,
+            "상품 카테고리 = Computers Accessories",
+            "7,546건",
+            "8.35%",
             "59,686"
           ],
           [
-            "seller_dayofweek=3.0",
-            2.45,
+            "승인 요일 = 목요일",
+            "14,500건",
+            "2.45%",
             "11,976"
           ]
         ]
       },
-      "key_insight": "Root Cause의 설명력(Effect Size)과 Business Impact(Impact Score)는 다를 수 있다"
+      "key_insight": "Root Cause의 설명력(Effect Size)과 Business Impact(Impact Score)는 다른 질문에 답한다",
+      "footnote": "※ Impact Score = (그룹 평균 − 전체 평균) × 주문 건수. 개선 우선순위 지표이며 실제 절감 시간이 아님. 지연율 변화 시뮬레이션은 검증되지 않은 가정에 기반하므로 의도적으로 수행하지 않음."
     },
     {
       "type": "DataTableSlide",
@@ -279,13 +294,13 @@
         "rows": [
           [
             "S1",
-            "RJ Carrier Delivery Speed-up",
+            "RJ Carrier Delivery Time Reduction",
             "20.19%",
             "788,027"
           ],
           [
             "S2",
-            "Office Furniture Processing Time Reduction",
+            "Office Furniture Processing Time Improvement",
             "8.35%",
             "295,903"
           ],
@@ -297,7 +312,7 @@
           ],
           [
             "S4",
-            "End-of-Week Seller Processing Bottleneck",
+            "End-of-Week Seller Processing Delay Reduction",
             "2.45%",
             "519,915"
           ]
@@ -307,25 +322,26 @@
     {
       "type": "ExperimentSlide",
       "title": "A/B Test Design",
-      "subtitle": "S1: RJ Delivery Time Optimization",
+      "subtitle": "S1: RJ Carrier Delivery Time Reduction",
       "left_column": {
-        "primary_metric": "Delivery Delay Rate (%)",
-        "baseline": "13.6% (RJ 기준)",
-        "mde": "1.0%p → Target 12.6%",
-        "alpha_power": "α=0.05 / Power=0.8",
-        "sample_size": "28,749건 (그룹당 14,375건)",
-        "experiment_unit": "Fulfillment Center"
+        "primary_metric": "Carrier Delivery (days)",
+        "baseline": "12.05 days (RJ 기준)",
+        "mde": "1.0 days → Target 11.05 days (상대 8.3%)",
+        "alpha_power": "α=0.05 / Power=0.8 (two-sided)",
+        "sample_size": "3,636건 (그룹당 1,818건)",
+        "experiment_unit": "order (Design Effect 1.0)"
       },
       "right_column": {
-        "treatment": "배송 최적화 조치 적용 거점 (RJ 담당)",
-        "control": "기존 운영 유지 거점",
+        "treatment": "RJ향 주문을 전담 배차 라인으로 전환",
+        "control": "기존 배차 프로세스 유지",
         "success_criteria": [
-          "Primary Metric (Delivery Delay Rate) decreases by at least 1.0 percentage point",
+          "Primary Metric (Carrier Delivery Time)이 MDE 이상 감소",
           "p_value < 0.05",
-          "Carrier Delivery Time (Secondary Metric) decreases",
-          "No deterioration in Guardrail Metrics"
+          "Secondary Metric (Delivery Delay Rate) 감소",
+          "Guardrail Metric 악화 없음 (비열등성 검정)"
         ]
-      }
+      },
+      "footnote": "실행 가능성 판정: feasible — 예상 기간 206일로 임계값 365일 이내이다. (대상 트래픽 하루 17.6건 기준)"
     },
     {
       "type": "RoadmapSlide",
@@ -361,8 +377,9 @@
       "type": "ClosingSlide",
       "title": "Final Recommendation",
       "paragraphs": [
-        "customer_state이 배송 지연의 가장 중요한 통계적 원인(effect size 20.19%)으로 확인되었습니다.",
-        "따라서 S1(RJ Carrier Delivery Speed-up)을 우선적으로 A/B Test를 통해 검증한 후, 효과가 확인되면 전사 확대 적용을 권고합니다."
+        "Carrier Delivery가 전체 리드타임의 74.21%를 차지하는 핵심 병목으로 확인되었습니다.",
+        "검토된 4개 시나리오 중 S1(RJ Carrier Delivery Time Reduction)을 A/B Test 검증 대상으로 승인했습니다.",
+        "선정 근거: RCA에서 검증된 원인 중 Geography의 설명력이 가장 컸고(effect size 20.19%), Impact Score도 높았다(788,027). 다만 설명력만으로 고른 것은 아니다. 지리적 거리 자체는 단기에 바꿀 수 없는 상수이므로, 거리를 줄이는 조치(거점 신설)가 아니라 동일 거리에서 배송 시간을 줄이는 조치(전담 배차)를 처치로 정의해 실험 가능한 형태로 만들었다."
       ],
       "callouts": [
         {
@@ -374,8 +391,8 @@
           "label": "customer_state Effect Size"
         },
         {
-          "value": "28,749건",
-          "label": "A/B Test 필요 샘플 수"
+          "value": "206일",
+          "label": "A/B Test 예상 기간"
         }
       ]
     }

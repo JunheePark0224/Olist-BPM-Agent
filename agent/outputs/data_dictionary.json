@@ -3,7 +3,7 @@
     "row_count": 99441,
     "columns": {
       "customer_id": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 1.0,
         "sample_values": [
@@ -13,7 +13,7 @@
         ]
       },
       "customer_unique_id": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.9664,
         "sample_values": [
@@ -33,7 +33,7 @@
         ]
       },
       "customer_city": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.0414,
         "sample_values": [
@@ -43,7 +43,7 @@
         ]
       },
       "customer_state": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.0003,
         "sample_values": [
@@ -88,7 +88,7 @@
         ]
       },
       "geolocation_city": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.008,
         "sample_values": [
@@ -98,7 +98,7 @@
         ]
       },
       "geolocation_state": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.0,
         "sample_values": [
@@ -113,7 +113,7 @@
     "row_count": 99441,
     "columns": {
       "order_id": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 1.0,
         "sample_values": [
@@ -123,7 +123,7 @@
         ]
       },
       "customer_id": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 1.0,
         "sample_values": [
@@ -133,7 +133,7 @@
         ]
       },
       "order_status": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.0001,
         "sample_values": [
@@ -143,7 +143,7 @@
         ]
       },
       "order_purchase_timestamp": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.9943,
         "sample_values": [
@@ -153,7 +153,7 @@
         ]
       },
       "order_approved_at": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0016,
         "unique_ratio": 0.9124,
         "sample_values": [
@@ -163,7 +163,7 @@
         ]
       },
       "order_delivered_carrier_date": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0179,
         "unique_ratio": 0.8147,
         "sample_values": [
@@ -173,7 +173,7 @@
         ]
       },
       "order_delivered_customer_date": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0298,
         "unique_ratio": 0.962,
         "sample_values": [
@@ -183,7 +183,7 @@
         ]
       },
       "order_estimated_delivery_date": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.0046,
         "sample_values": [
@@ -198,7 +198,7 @@
     "row_count": 112650,
     "columns": {
       "order_id": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.8759,
         "sample_values": [
@@ -218,7 +218,7 @@
         ]
       },
       "product_id": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.2925,
         "sample_values": [
@@ -228,7 +228,7 @@
         ]
       },
       "seller_id": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.0275,
         "sample_values": [
@@ -238,7 +238,7 @@
         ]
       },
       "shipping_limit_date": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.8284,
         "sample_values": [
@@ -273,7 +273,7 @@
     "row_count": 103886,
     "columns": {
       "order_id": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.9572,
         "sample_values": [
@@ -293,7 +293,7 @@
         ]
       },
       "payment_type": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.0,
         "sample_values": [
@@ -328,7 +328,7 @@
     "row_count": 99224,
     "columns": {
       "review_id": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.9918,
         "sample_values": [
@@ -338,7 +338,7 @@
         ]
       },
       "order_id": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.9944,
         "sample_values": [
@@ -358,7 +358,7 @@
         ]
       },
       "review_comment_title": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.8834,
         "unique_ratio": 0.0456,
         "sample_values": [
@@ -368,7 +368,7 @@
         ]
       },
       "review_comment_message": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.587,
         "unique_ratio": 0.3644,
         "sample_values": [
@@ -378,7 +378,7 @@
         ]
       },
       "review_creation_date": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.0064,
         "sample_values": [
@@ -388,7 +388,7 @@
         ]
       },
       "review_answer_timestamp": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.9902,
         "sample_values": [
@@ -403,7 +403,7 @@
     "row_count": 32951,
     "columns": {
       "product_id": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 1.0,
         "sample_values": [
@@ -413,7 +413,7 @@
         ]
       },
       "product_category_name": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0185,
         "unique_ratio": 0.0022,
         "sample_values": [
@@ -498,7 +498,7 @@
     "row_count": 3095,
     "columns": {
       "seller_id": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 1.0,
         "sample_values": [
@@ -518,7 +518,7 @@
         ]
       },
       "seller_city": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.1974,
         "sample_values": [
@@ -528,7 +528,7 @@
         ]
       },
       "seller_state": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 0.0074,
         "sample_values": [
@@ -543,7 +543,7 @@
     "row_count": 71,
     "columns": {
       "product_category_name": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 1.0,
         "sample_values": [
@@ -553,7 +553,7 @@
         ]
       },
       "product_category_name_english": {
-        "dtype": "str",
+        "dtype": "object",
         "null_ratio": 0.0,
         "unique_ratio": 1.0,
         "sample_values": [

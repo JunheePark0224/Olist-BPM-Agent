@@ -1,0 +1,125 @@
+# experiment_approval.yaml
+#
+# [Human Approval] ⑥ Scenario Recommendation 결과에 대한 승인과 실험 설계 판단
+#
+# 이 파일에는 "계산할 수 없는 것"만 담는다.
+#   - 어떤 시나리오를 검증할 것인가
+#   - 처치가 구체적으로 무엇인가
+#   - 그 처치를 어떤 단위로 적용할 수 있는가
+#   - 얼마나 개선되면 의미가 있는가 (MDE)
+#   - 무엇이 나빠지면 안 되는가 (가드레일 지표 선택)
+#
+# 표본 수, ICC, Design Effect, 예상 기간, 가드레일 기준선은 여기 적지 않는다.
+# ⑦ experiment_design.py가 계산해 experiment_design_report.json에 남긴다.
+# 이전 설계(ab_test_design.yaml)는 계산 결과를 사람이 손으로 옮겨 적었고,
+# 그래서 데이터나 승인 시나리오가 바뀌면 숫자가 조용히 낡았다.
+#
+# 시나리오 제목도 여기 적지 않는다. ⑥단계 LLM이 실행마다 다른 title을
+# 생성하므로 복사해두면 반드시 어긋난다. 제목의 단일 출처는
+# recommended_scenario.json이고, 이 파일은 id로만 승인 대상을 가리킨다.
+
+# ① 승인 대상
+scenario_id: S1
+
+selection_reason: >
+  RCA에서 검증된 원인 중 Geography의 설명력이 가장 컸고(effect size
+  20.19%), Impact Score도 높았다(788,027). 다만 설명력만으로 고른 것은
+  아니다. 지리적 거리 자체는 단기에 바꿀 수 없는 상수이므로, 거리를
+  줄이는 조치(거점 신설)가 아니라 동일 거리에서 배송 시간을 줄이는
+  조치(전담 배차)를 처치로 정의해 실험 가능한 형태로 만들었다.
+
+# ② 비즈니스 문제와 가설
+problem_statement: >
+  RJ주 배송(carrier_delivery_time)의 평균 소요시간이 전체 평균보다 길고
+  지연율도 높다. 전담 배차 라인 운영으로 이 격차를 줄일 수 있는지 검증한다.
+
+hypothesis:
+  h0: RJ향 전담 배차 전환은 Carrier Delivery Time에 유의미한 변화를 주지 않는다.
+  h1: RJ향 전담 배차 전환 시 Carrier Delivery Time이 감소한다.
+
+# ③ 처치와 실험 단위
+#
+# 실험 단위는 데이터로 결정되지 않는다. "이 처치를 어떤 단위로 적용할 수
+# 있는가"가 결정한다. 전담 배차 전환은 주문 건별 라우팅 변경이므로 주문
+# 단위 개별 랜덤화가 가능하고, 따라서 클러스터 랜덤화가 강제되지 않는다.
+#
+# 다른 단위를 골랐을 때의 비용(ICC/Design Effect/기간)은 ⑦단계가
+# randomization_units에 모두 계산해두므로, 처치가 바뀌면 그 표를 보고
+# 이 값만 수정하면 된다.
+treatment: RJ향 주문을 전담 배차 라인으로 전환
+control: 기존 배차 프로세스 유지
+eligible_population: RJ주 배송 대상 전 주문 (조건 없음)
+
+experiment_unit: order
+unit_selection_reason: >
+  처치가 주문 단위 라우팅 변경이므로 개별 랜덤화가 가능하다. 클러스터
+  랜덤화를 택하면 Design Effect만큼 표본이 더 필요하므로, 처치가 허용하는
+  가장 작은 단위인 주문을 선택했다.
+
+# ④ 1차 지표 유형과 MDE
+#
+# 1차 지표를 지연율(비율형)이 아니라 소요일수(연속형)로 둔 것이 이 설계의
+# 핵심 결정이다. 비율형은 약속일 경계를 넘나드는 주문만 값이 변해 정보를
+# 대부분 버린다. 필요 표본 수는 (잡음/신호)^2에 비례하므로, 같은 데이터에서도
+# 지표 유형에 따라 20배 이상 차이가 난다.
+#
+# ⑦단계가 같은 상대 개선폭을 두 지표 유형에 모두 적용해 비교표를
+# 만들어주므로, "목표를 낮춰 표본을 줄인 것 아니냐"는 반문에 숫자로
+# 답할 수 있다.
+primary_metric_type: continuous   # continuous | proportion
+mde:
+  value: 1.0
+  unit: days
+  basis: business_target
+  note: >
+    배송시간 단축과 지연율 감소의 관계는 검증되지 않았으므로 그 관계를
+    가정해 MDE를 유도하지 않는다. 초기 실험에서 운영상 의미 있다고
+    판단되는 절대값을 비즈니스 목표로 직접 설정했다.
+
+# ⑤ 가드레일 지표 선택
+#
+# 이름은 kpi_definition.yaml의 experiment_policy.guardrail_metrics에
+# 정의된 것 중에서 고른다. 기준선은 ⑦단계가 계산한다.
+#
+# 이전 설계의 가드레일(Cancellation Rate, Customer Complaint Rate)은
+# 이 데이터셋에서 측정할 수 없어 교체했다.
+#   - 취소율: 전처리가 order_status == 'delivered'만 남기므로 측정 불가
+#   - 고객 불만율: 데이터에 컬럼 자체가 없음
+# 전담 배차는 배송비 상승과 무리한 배차로 인한 만족도 하락을 유발할 수
+# 있으므로, 실제로 측정 가능한 이 두 지표를 가드레일로 삼는다.
+guardrail_metrics:
+  - freight_value
+  - review_score
+
+guardrail_tolerance:
+  freight_value: 상승 5% 이내
+  review_score: 하락 0.05점 이내
+
+# ⑥ 성공 기준
+success_criteria:
+  - Primary Metric (Carrier Delivery Time)이 MDE 이상 감소
+  - p_value < 0.05
+  - Secondary Metric (Delivery Delay Rate) 감소
+  - Guardrail Metric 악화 없음 (비열등성 검정)
+
+# ⑦ 설계의 한계
+limitations:
+  - >
+    전담 배차 라인은 처리 능력을 공유한다. 실험에서 RJ 주문의 절반만
+    전담 라인으로 보내면 라인이 포화되지 않아, 전면 적용 시보다 처치군의
+    성과가 좋게 나올 수 있다(간섭 효과). 실험 결과는 전면 적용 효과의
+    상한으로 해석해야 하며, 단계적 확대로 재확인이 필요하다.
+  - >
+    Olist 데이터셋에는 운송사 식별자와 배차 이력이 없어, 전담 배차의
+    구체적 운영 방식(전담 차량 수, 배차 주기 등)은 이 설계에서 정의하지
+    않았다. 실제 실행 시 운영 조건 확정이 선행되어야 한다.
+
+# ⑧ 실험 결과에 따른 후속 조치
+decision:
+  if_success: >
+    RJ향 전담 배차를 단계적으로 확대 적용하고, 간섭 효과를 고려해 각
+    단계에서 효과를 재측정한다. 이후 BA·RS 등 다른 고지연 주로의 확장을
+    검토한다.
+  if_failure: >
+    기존 배차 프로세스를 유지하고, Carrier 구간 내에서 다른 레버
+    (집하 주기, 허브 처리 시간)를 원인 분석 단계로 되돌려 재검토한다.

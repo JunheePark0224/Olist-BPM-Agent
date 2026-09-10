@@ -45,6 +45,7 @@ import pandas as pd
 import yaml
 import matplotlib.pyplot as plt
 from scipy import stats
+from labels import format_derived_value
 from config import CONFIG_DIR, DATA_DIR, OUTPUT_DIR, CHAT_MODEL, ensure_dir, get_anthropic_client, log
 from join_engine import build_analysis_dataset
 
@@ -311,9 +312,46 @@ def add_derived_columns(df: pd.DataFrame, derived_config: Dict[str, Any]) -> pd.
     return df
 
 
+MIN_GROUP_COUNT_FOR_EXTREMES = 50  # ⑤ Business Impact Simulation의 min_count와 동일
+
+
+def attach_group_labels(result: Dict[str, Any], derived: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    group_stats의 극값 그룹에 사람이 읽는 label을 붙인다.
+
+    파생 변수(월/요일)는 값이 정수라 LLM이 오해한다 — dayofweek=0을 "일요일"로
+    읽은 사례가 있었다. 라벨을 명시해 프롬프트가 그것을 인용하게 한다.
+    파생이 아닌 변수는 값 그대로 label로 쓴다.
+
+    Args:
+        result: eta_squared()의 반환값
+        derived: approved_features.yaml의 derived 정의
+
+    Returns:
+        Dict[str, Any]: highest/lowest에 label이 추가된 새 dict
+    """
+    stats_block = result.get("group_stats")
+    if not stats_block:
+        return result
+    spec = derived.get(result["variable"], {})
+    extract = spec.get("extract")
+    labeled = {
+        key: {**grp, "label": format_derived_value(grp["group"], extract) if extract else grp["group"]}
+        for key, grp in stats_block.items()
+        if key in ("highest", "lowest")
+    }
+    return {**result, "group_stats": {**stats_block, **labeled}}
+
+
 def eta_squared(df: pd.DataFrame, feature_col: str, target_col: str) -> Dict[str, Any]:
     """
     범주형 변수의 η² (effect size) 계산. ANOVA(F-test) 기반.
+
+    η²와 함께 그룹 극값(group_stats)을 반환한다. Step 3의 LLM이 해석 문장에
+    "SP 134h → RR 624h, 4.6배"처럼 실제 수치를 인용할 수 있게 하기 위해서다.
+    이 수치가 없으면 LLM은 지어내지 말라는 지시에 따라 일반론만 쓰게 된다.
+    극값은 표본이 너무 작은 그룹이 튀는 것을 막기 위해 min_count 이상인
+    그룹 중에서만 고른다.
 
     Args:
         df: 대상 DataFrame
@@ -321,11 +359,12 @@ def eta_squared(df: pd.DataFrame, feature_col: str, target_col: str) -> Dict[str
         target_col: 대상(연속형) KPI 컬럼명
 
     Returns:
-        Dict[str, Any]: {"variable", "type", "f_stat", "p_value", "effect_size_pct"}
+        Dict[str, Any]: {"variable", "type", "f_stat", "p_value", "effect_size_pct",
+        "group_stats": {"highest", "lowest", "ratio", "n_groups"}}
     """
     clean = df[[feature_col, target_col]].dropna()
-    groups = [g[target_col].values for _, g in clean.groupby(feature_col)]
-    groups = [g for g in groups if len(g) > 0]
+    grouped = clean.groupby(feature_col)[target_col]
+    groups = [g.values for _, g in grouped if len(g) > 0]
 
     if len(groups) < 2:
         log(f"η² 계산 불가 (그룹 수 부족): {feature_col}")
@@ -339,10 +378,25 @@ def eta_squared(df: pd.DataFrame, feature_col: str, target_col: str) -> Dict[str
     ss_between = np.sum([len(g) * (np.mean(g) - grand_mean) ** 2 for g in groups])
     eta_sq = ss_between / ss_total if ss_total else 0.0
 
+    # 그룹 극값 (min_count 이상인 그룹만 대상)
+    means = grouped.mean()
+    counts = grouped.size()
+    eligible = means[counts >= MIN_GROUP_COUNT_FOR_EXTREMES]
+    group_stats = None
+    if len(eligible) >= 2:
+        hi, lo = eligible.idxmax(), eligible.idxmin()
+        group_stats = {
+            "highest": {"group": str(hi), "mean": round(float(eligible[hi]), 1), "n": int(counts[hi])},
+            "lowest": {"group": str(lo), "mean": round(float(eligible[lo]), 1), "n": int(counts[lo])},
+            "ratio": round(float(eligible[hi] / eligible[lo]), 1) if eligible[lo] else None,
+            "n_groups": int(len(eligible)),
+        }
+
     log(f"η² 계산: {feature_col} → F={f_stat:.2f}, p={p_value:.4f}, η²={eta_sq*100:.2f}%")
     return {
         "variable": feature_col,
         "type": "categorical",
+        "group_stats": group_stats,
         "f_stat": round(float(f_stat), 2),
         "p_value": round(float(p_value), 4),
         "effect_size_pct": round(float(eta_sq) * 100, 2),
@@ -477,7 +531,7 @@ async def run_step2_for_stage(
 
     results = []
     for col in categorical:
-        results.append(eta_squared(merged_df, col, kpi_col))
+        results.append(attach_group_labels(eta_squared(merged_df, col, kpi_col), derived))
     for col in continuous:
         results.append(r_squared(merged_df, col, kpi_col))
 
@@ -602,10 +656,21 @@ details는 완전한 문장이 아니라 5단어 이내의 짧은 키워드 구�
 관련 원인만, product_weight_g라면 무게/포장 관련 원인만).
 
 
-⚠️ details, top_causes의 explanation, summary는 모두 영어로
-작성하세요 (다이어그램 렌더링 시 폰트 호환성을 위함). JSON의 키와
-stage 값은 그대로 두고, 값(value)에 해당하는 서술 텍스트만 영어로
-작성하면 됩니다.
+⚠️ 언어 규칙 (용도가 다르므로 분리):
+- details와 카테고리명(category/name): 영어. graphviz 다이어그램 라벨로
+  렌더링되며 기본 폰트가 한글을 지원하지 않습니다.
+- top_causes의 explanation과 summary: 한국어. 경영진 대상 슬라이드에
+  실리는 문장이며 나머지 덱이 전부 한국어입니다.
+
+⚠️ explanation에는 반드시 입력의 group_stats 수치를 인용하세요.
+group_stats가 있는 변수는 "가장 낮은 그룹 → 가장 높은 그룹, N배" 형태로
+실제 값을 쓰세요 (예: "SP 134h → RR 624h로 4.6배 차이"). 단위는 입력
+KPI의 단위(hours)를 그대로 쓰고 h로 표기하세요.
+그룹 이름은 반드시 group_stats의 "label" 값을 그대로 쓰세요. "group"의
+원시값(0, 5.0 등)을 요일이나 월로 스스로 해석하지 마세요 — label이
+이미 정확한 이름("토요일", "3월")입니다. group_stats가 없는
+변수(연속형)는 effect_size_pct만 인용하세요. 입력에 없는 숫자를
+만들지 마세요.
 
 작업 순서:
 1. 각 변수를 상위 카테고리로 그룹핑하세요 (Geography, Seasonality,
@@ -621,9 +686,9 @@ stage 값은 그대로 두고, 값(value)에 해당하는 서술 텍스트만 �
 {
   "stage": "<stage_key>",
   "top_causes": [
-    {"category": "<카테고리명>", "effect_size_pct": <숫자>, "explanation": "One sentence in English"}
+    {"category": "<영어 카테고리명>", "effect_size_pct": <숫자>, "explanation": "한국어 한 문장, group_stats 수치 인용"}
   ],
-  "summary": "2-3 sentence summary in English"
+  "summary": "한국어 2-3문장 요약"
 }
 
 === JSON 2: cause_effect_structure ===
@@ -824,7 +889,17 @@ def run_step4(output_dir: str = OUTPUT_DIR) -> Dict[str, str]:
 
         dot = build_cause_effect_diagram(structure)
         output_path = Path(output_dir) / f"cause_effect_diagram_{stage_key}"
-        rendered_path = dot.render(str(output_path), format="png", cleanup=True)
+        try:
+            rendered_path = dot.render(str(output_path), format="png", cleanup=True)
+        except graphviz.backend.ExecutableNotFound:
+            # 시스템 Graphviz(dot)가 없으면 다이어그램만 건너뛴다. 파이프라인의 다른
+            # 산출물은 이 이미지에 의존하지 않고, PPT 렌더러는 이미지가 없으면
+            # 플레이스홀더를 표시한다. 여기서 죽으면 ⑤~⑨를 전부 잃는다.
+            log(f"⚠️ Graphviz 실행파일(dot)이 없어 {stage_key} 다이어그램을 건너뜁니다. "
+                f"설치: https://graphviz.org/download/ (PATH 등록 필요)")
+            # render()는 dot 호출 전에 .gv 소스를 먼저 쓰므로 실패 시 잔여물이 남는다
+            Path(str(output_path)).unlink(missing_ok=True)
+            continue
 
         results[stage_key] = rendered_path
         log(f"cause_effect_diagram 저장 완료: {rendered_path}")

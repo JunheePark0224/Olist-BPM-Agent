@@ -7,6 +7,22 @@
         {
           "variable": "customer_state",
           "type": "categorical",
+          "group_stats": {
+            "highest": {
+              "group": "AP",
+              "mean": 589.5,
+              "n": 81,
+              "label": "AP"
+            },
+            "lowest": {
+              "group": "SP",
+              "mean": 132.9,
+              "n": 45758,
+              "label": "SP"
+            },
+            "ratio": 4.4,
+            "n_groups": 26
+          },
           "f_stat": 1056.43,
           "p_value": 0.0,
           "effect_size_pct": 20.19
@@ -14,6 +30,22 @@
         {
           "variable": "seller_state",
           "type": "categorical",
+          "group_stats": {
+            "highest": {
+              "group": "CE",
+              "mean": 344.5,
+              "n": 89,
+              "label": "CE"
+            },
+            "lowest": {
+              "group": "RS",
+              "mean": 194.2,
+              "n": 2134,
+              "label": "RS"
+            },
+            "ratio": 1.8,
+            "n_groups": 15
+          },
           "f_stat": 21.27,
           "p_value": 0.0,
           "effect_size_pct": 0.41
@@ -21,6 +53,22 @@
         {
           "variable": "product_category_name_english",
           "type": "categorical",
+          "group_stats": {
+            "highest": {
+              "group": "christmas_supplies",
+              "mean": 300.0,
+              "n": 149,
+              "label": "christmas_supplies"
+            },
+            "lowest": {
+              "group": "books_imported",
+              "mean": 126.3,
+              "n": 55,
+              "label": "books_imported"
+            },
+            "ratio": 2.4,
+            "n_groups": 58
+          },
           "f_stat": 10.5,
           "p_value": 0.0,
           "effect_size_pct": 0.68
@@ -28,6 +76,22 @@
         {
           "variable": "carrier_month",
           "type": "categorical",
+          "group_stats": {
+            "highest": {
+              "group": "3",
+              "mean": 294.9,
+              "n": 11162,
+              "label": "3월"
+            },
+            "lowest": {
+              "group": "8",
+              "mean": 148.5,
+              "n": 12702,
+              "label": "8월"
+            },
+            "ratio": 2.0,
+            "n_groups": 12
+          },
           "f_stat": 604.0,
           "p_value": 0.0,
           "effect_size_pct": 5.77
@@ -35,6 +99,22 @@
         {
           "variable": "carrier_dayofweek",
           "type": "categorical",
+          "group_stats": {
+            "highest": {
+              "group": "5",
+              "mean": 267.2,
+              "n": 1994,
+              "label": "토요일"
+            },
+            "lowest": {
+              "group": "0",
+              "mean": 205.7,
+              "n": 21815,
+              "label": "월요일"
+            },
+            "ratio": 1.3,
+            "n_groups": 6
+          },
           "f_stat": 57.71,
           "p_value": 0.0,
           "effect_size_pct": 0.32
@@ -55,6 +135,22 @@
         {
           "variable": "seller_state",
           "type": "categorical",
+          "group_stats": {
+            "highest": {
+              "group": "MA",
+              "mean": 114.3,
+              "n": 383,
+              "label": "MA"
+            },
+            "lowest": {
+              "group": "PE",
+              "mean": 43.5,
+              "n": 438,
+              "label": "PE"
+            },
+            "ratio": 2.6,
+            "n_groups": 15
+          },
           "f_stat": 14.63,
           "p_value": 0.0,
           "effect_size_pct": 0.28
@@ -62,6 +158,22 @@
         {
           "variable": "product_category_name_english",
           "type": "categorical",
+          "group_stats": {
+            "highest": {
+              "group": "office_furniture",
+              "mean": 247.9,
+              "n": 1659,
+              "label": "office_furniture"
+            },
+            "lowest": {
+              "group": "cine_photo",
+              "mean": 36.2,
+              "n": 64,
+              "label": "cine_photo"
+            },
+            "ratio": 6.8,
+            "n_groups": 58
+          },
           "f_stat": 139.25,
           "p_value": 0.0,
           "effect_size_pct": 8.35
@@ -69,6 +181,22 @@
         {
           "variable": "seller_month",
           "type": "categorical",
+          "group_stats": {
+            "highest": {
+              "group": "11",
+              "mean": 88.3,
+              "n": 8322,
+              "label": "11월"
+            },
+            "lowest": {
+              "group": "8",
+              "mean": 57.9,
+              "n": 11995,
+              "label": "8월"
+            },
+            "ratio": 1.5,
+            "n_groups": 12
+          },
           "f_stat": 151.75,
           "p_value": 0.0,
           "effect_size_pct": 1.51
@@ -76,6 +204,22 @@
         {
           "variable": "seller_dayofweek",
           "type": "categorical",
+          "group_stats": {
+            "highest": {
+              "group": "5",
+              "mean": 91.8,
+              "n": 13478,
+              "label": "토요일"
+            },
+            "lowest": {
+              "group": "0",
+              "mean": 57.3,
+              "n": 14236,
+              "label": "월요일"
+            },
+            "ratio": 1.6,
+            "n_groups": 7
+          },
           "f_stat": 454.25,
           "p_value": 0.0,
           "effect_size_pct": 2.45

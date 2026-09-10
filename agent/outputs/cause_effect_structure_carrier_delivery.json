@@ -10,8 +10,8 @@
           "variable": "customer_state",
           "details": [
             "Remote northern regions",
-            "Limited logistics infrastructure",
-            "Long inter-state distances"
+            "Long transport distances",
+            "Limited logistics infrastructure"
           ]
         }
       ]
@@ -23,9 +23,9 @@
         {
           "variable": "carrier_month",
           "details": [
-            "Holiday season peaks",
-            "Carrier capacity shortages",
-            "Monthly demand fluctuations"
+            "Peak season volume surge",
+            "Holiday period congestion",
+            "Weather related disruptions"
           ]
         }
       ]

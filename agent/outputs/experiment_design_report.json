@@ -1,0 +1,157 @@
+{
+  "scenario": {
+    "id": "S1",
+    "title": "RJ Carrier Delivery Time Reduction",
+    "metric_label": "Carrier Delivery",
+    "variable": "customer_state",
+    "target_values": [
+      "RJ"
+    ],
+    "kpi_column": "carrier_delivery_time",
+    "stage_key": "carrier_delivery",
+    "effect_size_pct": 20.19,
+    "impact_score": 788027.0
+  },
+  "baseline": {
+    "target_variable": "customer_state",
+    "target_values": [
+      "RJ"
+    ],
+    "order_count": 12210,
+    "metric_mean": 12.05,
+    "metric_sd": 10.76,
+    "metric_unit": "days",
+    "delay_rate_pct": 13.6,
+    "overall_metric_mean": 9.36,
+    "observation_period_days": 693,
+    "estimated_daily_orders": 17.6
+  },
+  "power_analysis": {
+    "alpha": 0.05,
+    "sided": "two-sided",
+    "power": 0.8,
+    "formula_continuous": "n_per_arm = 2 * (z_(1-alpha/2) + z_(1-beta))^2 * sd^2 / delta^2",
+    "formula_proportion": "n_per_arm = (z_(1-alpha/2) + z_(1-beta))^2 * [p1(1-p1) + p2(1-p2)] / delta^2",
+    "design_effect_formula": "DE = 1 + (avg_cluster_size - 1) * ICC"
+  },
+  "metric_options": [
+    {
+      "metric_type": "continuous",
+      "metric": "Carrier Delivery (days)",
+      "mde": 1.0,
+      "mde_unit": "days",
+      "relative_pct": 8.3,
+      "sample_size_per_group": 1818,
+      "sample_size_total": 3636,
+      "estimated_duration_days": 206,
+      "feasible": true
+    },
+    {
+      "metric_type": "proportion",
+      "metric": "Delivery Delay Rate (%)",
+      "mde": 0.0113,
+      "mde_unit": "%p",
+      "relative_pct": 8.3,
+      "sample_size_per_group": 13980,
+      "sample_size_total": 27960,
+      "estimated_duration_days": 1587,
+      "feasible": false
+    }
+  ],
+  "randomization_units": [
+    {
+      "unit": "order",
+      "n_clusters": null,
+      "avg_cluster_size": null,
+      "icc": null,
+      "design_effect": 1.0,
+      "sample_size_per_group": 1818,
+      "estimated_duration_days": 206,
+      "status": "ok"
+    },
+    {
+      "unit": "seller_id",
+      "n_clusters": 1683,
+      "avg_cluster_size": 7.3,
+      "icc": 0.1066,
+      "design_effect": 1.67,
+      "status": "ok",
+      "sample_size_per_group": 3036,
+      "estimated_duration_days": 345
+    },
+    {
+      "unit": "seller_state",
+      "n_clusters": 19,
+      "avg_cluster_size": 642.6,
+      "icc": 0.0933,
+      "design_effect": 60.84,
+      "status": "ok",
+      "sample_size_per_group": 110607,
+      "estimated_duration_days": 12555
+    },
+    {
+      "unit": "zip3",
+      "n_clusters": 64,
+      "avg_cluster_size": 190.8,
+      "icc": 0.0245,
+      "design_effect": 5.64,
+      "status": "ok",
+      "sample_size_per_group": 10254,
+      "estimated_duration_days": 1164
+    },
+    {
+      "unit": "zip4",
+      "n_clusters": 426,
+      "avg_cluster_size": 28.7,
+      "icc": 0.0354,
+      "design_effect": 1.98,
+      "status": "ok",
+      "sample_size_per_group": 3600,
+      "estimated_duration_days": 409
+    },
+    {
+      "unit": "fulfillment_center",
+      "status": "not_evaluable",
+      "reason": "Olist 공개 데이터셋에 물류 거점 식별자 컬럼이 존재하지 않아 클러스터를 정의할 수 없고, 따라서 ICC를 산출할 수 없다."
+    }
+  ],
+  "selected_design": {
+    "metric_type": "continuous",
+    "metric": "Carrier Delivery (days)",
+    "mde": 1.0,
+    "mde_unit": "days",
+    "relative_pct": 8.3,
+    "sample_size_per_group": 1818,
+    "sample_size_total": 3636,
+    "estimated_duration_days": 206,
+    "feasible": true,
+    "experiment_unit": "order",
+    "design_effect": 1.0
+  },
+  "feasibility": {
+    "status": "feasible",
+    "max_duration_days": 365,
+    "message": "예상 기간 206일로 임계값 365일 이내이다.",
+    "feasible_alternatives": []
+  },
+  "guardrail_baselines": [
+    {
+      "metric": "freight_value",
+      "label": "Freight Value per Order",
+      "status": "ok",
+      "mean": 23.935,
+      "sd": 19.726,
+      "n": 12210,
+      "unit": "BRL"
+    },
+    {
+      "metric": "review_score",
+      "label": "Review Score",
+      "status": "ok",
+      "mean": 3.963,
+      "sd": 1.454,
+      "n": 12072,
+      "unit": "point"
+    }
+  ]
+}

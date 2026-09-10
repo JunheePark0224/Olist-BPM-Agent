@@ -46,6 +46,7 @@ processes:
     level: order
 
 delay_metric:
+  name: Delivery Delay   # 표시용 이름 (⑦단계가 비율형 지표 라벨에 사용)
   actual: order_delivered_customer_date
   estimated: order_estimated_delivery_date
   kpi_column: delivery_delay
@@ -53,3 +54,79 @@ delay_metric:
 bottleneck_policy:
   min_share_pct: 15
   min_delay_ratio: 1.5
+
+# ⑦ Experiment Design 단계의 판정 정책
+#
+# bottleneck_policy가 "감으로 병목을 고르던 것"을 임계값으로 바꿨듯이,
+# 실험 설계의 실행 가능성도 사람이 매번 눈치채는 대신 규칙으로 판정한다.
+# 예상 기간이 max_duration_days를 넘으면 infeasible로 표시하고, 대안
+# (지표 유형 변경, MDE 상향)을 함께 계산해 제시한다.
+experiment_policy:
+  # 데이터셋 종속 값. 다른 데이터셋에 적용할 때 여기만 바꾼다.
+  order_key: order_id                          # 분석 단위(주문)를 식별하는 컬럼. 가드레일 조인 키
+  traffic_timestamp: order_purchase_timestamp  # 실험 기간 추정용 유입 시각
+  kpi_hours_per_unit: 24                       # processes의 KPI(시간) → 표시 단위 환산 계수
+  kpi_display_unit: days                       # 덱과 리포트에 표시할 단위
+
+  max_duration_days: 365   # 1년 안에 결론이 나지 않으면 실험으로 성립하지 않는다고 본다
+  alpha: 0.05              # 유의수준 (양측)
+  power: 0.80              # 검정력
+  mde_relaxation_factors: [1.5, 2.0, 3.0]  # infeasible일 때 시도해볼 MDE 배수
+
+  # 랜덤화 단위 후보에 필요한 컬럼을 주문 단위(grain)를 유지하며 붙인다.
+  #
+  # ⚠️ order_items는 주문당 여러 행이므로 그대로 조인하면 행이 복제된다.
+  # 노트북(05_Root_Cause_Analysis_2)이 이 테이블을 두 번 조인해 108,581행이
+  # 151,581행이 되었고 product_category η²가 8.35%에서 12.77%로 부풀려졌다.
+  # reduce: first로 주문당 1행으로 축약해 같은 실수를 구조적으로 막는다.
+  cluster_sources:
+    - file: olist_order_items_dataset.csv
+      join_on: order_id
+      reduce: first        # 주문당 첫 아이템만 사용
+      columns: [seller_id]
+      note: >
+        분석 대상 주문의 98.71%는 셀러가 1곳이고, 1.29%(1,223건)만 2곳
+        이상이다. 첫 아이템의 셀러로 근사한다. 셀러는 주문을 완전히
+        분할하는 파티션이 아니므로, 셀러 단위 랜덤화를 실제로 채택할
+        경우 다중 셀러 주문의 배정 규칙을 별도로 정의해야 한다.
+    - file: olist_sellers_dataset.csv
+      join_on: seller_id
+      reduce: none
+      columns: [seller_state]
+
+  # 랜덤화 단위 후보. 처치를 어떤 단위로 적용할 수 있는지는 사람이 정하지만,
+  # 각 단위를 골랐을 때의 비용(ICC/Design Effect)은 여기 정의된 후보를
+  # 순회하며 자동 계산한다.
+  randomization_unit_candidates:
+    - name: seller_id
+      column: seller_id
+    - name: seller_state
+      column: seller_state
+    - name: zip3
+      derive: {source: customer_zip_code_prefix, zfill: 5, prefix_length: 3}
+    - name: zip4
+      derive: {source: customer_zip_code_prefix, zfill: 5, prefix_length: 4}
+
+  # 개념적으로는 타당하나 이 데이터셋에서 산출할 수 없는 단위.
+  # 조용히 빠뜨리지 않고 "왜 계산할 수 없는지"를 산출물에 남긴다.
+  not_evaluable_units:
+    - name: fulfillment_center
+      reason: >
+        Olist 공개 데이터셋에 물류 거점 식별자 컬럼이 존재하지 않아
+        클러스터를 정의할 수 없고, 따라서 ICC를 산출할 수 없다.
+
+  # 가드레일 지표의 기준선을 계산하는 방법.
+  # experiment_approval.yaml에서 이름으로 선택한다.
+  guardrail_metrics:
+    freight_value:
+      label: Freight Value per Order
+      file: olist_order_items_dataset.csv
+      column: freight_value
+      agg: sum        # 주문당 합계 (아이템 여러 개일 수 있음)
+      unit: BRL
+    review_score:
+      label: Review Score
+      file: olist_order_reviews_dataset.csv
+      column: review_score
+      agg: mean       # 주문당 평균 (리뷰 여러 개일 수 있음)
+      unit: point

@@ -1,5 +1,6 @@
 {
   "total_orders": 95082,
+  "delayed_orders": 7792,
   "delay_rate_pct": 8.2,
   "stage_summary": [
     {

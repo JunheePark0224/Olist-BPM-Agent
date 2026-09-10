@@ -28,6 +28,20 @@
 # 이렇게 데이터로 남겨두면 Python이 하드코딩 없이 자동으로 생성할 수 있고,
 # LLM도 (주석과 달리) 이 정보를 그대로 읽고 이해할 수 있다.
 
+# 덱에 표시할 변수 이름. ⑧ Report Builder가 원시 컬럼명(customer_state,
+# carrier_month=3.0) 대신 이 이름을 쓴다. 없는 변수는 컬럼명 그대로 표시된다.
+# 값의 표시 형식은 derived의 extract 유형에서 자동 결정된다
+# (month → "3월", dayofweek → "금요일").
+display_names:
+  customer_state: 고객 주(州)
+  seller_state: 셀러 주(州)
+  product_category_name_english: 상품 카테고리
+  carrier_month: 배송 월
+  carrier_dayofweek: 배송 요일
+  seller_month: 승인 월
+  seller_dayofweek: 승인 요일
+  product_weight_g: 상품 무게
+
 carrier_delivery:
   categorical:
     - customer_state

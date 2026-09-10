@@ -1,6 +1,6 @@
 # ppt_generator.py
 """
-⑨-2 PPT Generator 모듈
+⑨ PPT Generator 모듈
 - report_data.json만 읽어서 슬라이드를 렌더링한다.
 - 이전 분석 로직(bottleneck_report.json 등)의 존재를 전혀 모른다.
 
@@ -338,8 +338,13 @@ def render_data_table_slide(prs: Presentation, data: Dict[str, Any]):
     _add_table(slide, data["table"], top=top, width=Inches(12.13), max_rows=6)
 
     if data.get("key_insight"):
-        ki_box = slide.shapes.add_textbox(t.MARGIN, Inches(6.9), Inches(12), Inches(0.5))
+        ki_box = slide.shapes.add_textbox(t.MARGIN, Inches(6.5), Inches(12), Inches(0.5))
         set_run(ki_box.text_frame.paragraphs[0], data["key_insight"], size=Pt(13), bold=True)
+
+    if data.get("footnote"):
+        fn_box = slide.shapes.add_textbox(t.MARGIN, Inches(6.95), Inches(12), Inches(0.4))
+        fn_box.text_frame.word_wrap = True
+        set_run(fn_box.text_frame.paragraphs[0], data["footnote"], size=t.SIZE_CAPTION, color=t.TEXT_GRAY)
 
     return slide
 
@@ -522,6 +527,11 @@ def render_dual_image_slide(prs: Presentation, data: Dict[str, Any], images_dir:
     slide = add_blank_slide(prs)
     add_header(slide, data.get("category_label", ""), data["title"])
     _add_side_by_side_images(slide, data["images"], images_dir, top=t.CONTENT_TOP, max_height=Inches(4.8))
+
+    if data.get("footnote"):
+        fn_box = slide.shapes.add_textbox(t.MARGIN, Inches(6.9), Inches(12), Inches(0.4))
+        fn_box.text_frame.word_wrap = True
+        set_run(fn_box.text_frame.paragraphs[0], data["footnote"], size=t.SIZE_CAPTION, color=t.TEXT_GRAY)
     return slide
 
 
@@ -590,6 +600,11 @@ def render_experiment_slide(prs: Presentation, data: Dict[str, Any]):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
         p.space_after = Pt(6)
         set_run(p, f"✓  {item}", size=Pt(12))
+
+    if data.get("footnote"):
+        fn_box = slide.shapes.add_textbox(t.MARGIN, Inches(6.9), Inches(12), Inches(0.4))
+        fn_box.text_frame.word_wrap = True
+        set_run(fn_box.text_frame.paragraphs[0], data["footnote"], size=t.SIZE_CAPTION, color=t.TEXT_GRAY)
 
     return slide
 

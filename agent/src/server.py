@@ -7,6 +7,10 @@ Olist Business Process Optimization Agent - MCP 서버
 Human Review/Approval이 필요한 지점(④ Step1 후, ⑥ 후)은
 결과를 반환하고 멈추며, 사람이 config 파일을 수정한 뒤
 다음 tool을 호출하는 방식으로 자연스럽게 대화형 흐름이 만들어진다.
+
+⑦ Experiment Design은 실행 가능성 판정(feasible/infeasible)을 반환하므로,
+infeasible이면 대화 중에 대안을 확인하고 experiment_approval.yaml을
+수정한 뒤 다시 호출하는 흐름이 가능하다.
 """
 
 from __future__ import annotations
@@ -20,6 +24,7 @@ import bottleneck_detection
 import root_cause_analysis
 import business_impact_simulation
 import scenario_recommendation
+import experiment_design
 import report_builder
 import ppt_generator
 
@@ -59,12 +64,22 @@ async def tool_business_impact() -> dict:
     return business_impact_simulation.run()
 
 
-@mcp.tool(name="run_scenario_recommendation", description="개선 시나리오를 추천합니다 (Human Approval 필요)")
+@mcp.tool(name="run_scenario_recommendation", description="개선 시나리오를 추천합니다 (Human Approval 필요: experiment_approval.yaml 작성)")
 async def tool_scenario_recommendation() -> dict:
     return await scenario_recommendation.run()
 
 
-@mcp.tool(name="run_report_generation", description="ab_test_design.yaml 작성 완료 후, 최종 Executive Report PPT를 생성합니다")
+@mcp.tool(name="run_experiment_design", description="experiment_approval.yaml 작성 완료 후, 표본 수/ICC/Design Effect/예상 기간을 계산하고 실행 가능성을 판정합니다")
+def tool_experiment_design() -> dict:
+    report = experiment_design.run()
+    return {
+        "feasibility": report["feasibility"],
+        "selected_design": report["selected_design"],
+        "randomization_units": report["randomization_units"],
+    }
+
+
+@mcp.tool(name="run_report_generation", description="⑦ Experiment Design 완료 후, 최종 Executive Report PPT를 생성합니다")
 def tool_report_generation() -> dict:
     report_builder.run()
     path = ppt_generator.run(

@@ -291,6 +291,7 @@ def run(config_dir: str = CONFIG_DIR, output_dir: str = OUTPUT_DIR) -> Dict[str,
 
     bottleneck_report = {
         "total_orders": int(len(df)),
+        "delayed_orders": int((df[delay_col] > 0).sum()),
         "delay_rate_pct": delay_rate,
         "stage_summary": stage_summary.to_dict(orient="records"),
         "delayed_vs_normal": comparison.to_dict(orient="records"),

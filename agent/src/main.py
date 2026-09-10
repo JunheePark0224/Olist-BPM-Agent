@@ -11,6 +11,7 @@ import bottleneck_detection
 import root_cause_analysis
 import business_impact_simulation
 import scenario_recommendation
+import experiment_design
 import report_builder
 import ppt_generator
 
@@ -42,13 +43,24 @@ async def main():
     print("=== ⑥ Scenario Recommendation ===")
     await scenario_recommendation.run()
     print("\n⚠️  Human Approval 필요: recommended_scenario.md를 확인하고")
-    print("    agent/config/ab_test_design.yaml을 작성한 뒤 Enter를 눌러주세요.")
+    print("    agent/config/experiment_approval.yaml을 작성한 뒤 Enter를 눌러주세요.")
+    print("    (표본 수·기간은 적지 않습니다. ⑦단계가 계산합니다.)")
     input()
 
-    print("=== ⑦ Report Builder ===")
+    print("=== ⑦ Experiment Design ===")
+    design = experiment_design.run()
+    feasibility = design["feasibility"]
+    print(f"    실행 가능성: {feasibility['status']} — {feasibility['message']}")
+    if feasibility["status"] == "infeasible":
+        print("\n⚠️  현재 설계로는 실험이 성립하지 않습니다.")
+        print("    위 대안을 반영해 experiment_approval.yaml을 수정한 뒤 다시 실행하거나,")
+        print("    이대로 보고서에 한계로 명시하려면 Enter를 눌러 계속하세요.")
+        input()
+
+    print("=== ⑧ Report Builder ===")
     report_builder.run()
 
-    print("=== ⑧ PPT Generator ===")
+    print("=== ⑨ PPT Generator ===")
     ppt_generator.run(
         report_data_path="../outputs/report_data.json",
         output_path="../outputs/executive_report.pptx",

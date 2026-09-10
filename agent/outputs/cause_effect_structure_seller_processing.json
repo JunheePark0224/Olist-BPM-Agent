@@ -9,9 +9,9 @@
         {
           "variable": "product_category_name_english",
           "details": [
-            "Custom or made-to-order items",
-            "Fragile item extra packaging",
-            "Category-specific quality checks"
+            "Custom assembly required",
+            "Bulky item handling",
+            "Low stock turnover"
           ]
         }
       ]
@@ -23,9 +23,9 @@
         {
           "variable": "seller_dayofweek",
           "details": [
-            "Weekend processing lag",
-            "Reduced weekend staffing",
-            "Monday order backlog"
+            "Weekend staff reduction",
+            "Order backlog accumulation",
+            "Weekend processing lag"
           ]
         }
       ]
@@ -38,8 +38,8 @@
           "variable": "product_weight_g",
           "details": [
             "Heavy item handling",
-            "Extra packaging materials needed",
-            "Multiple worker lifting requirement"
+            "Packaging time increase",
+            "Additional labor required"
           ]
         }
       ]
