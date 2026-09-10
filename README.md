@@ -75,12 +75,27 @@ Python의 계산을 분리하고, 사람이 개입할 지점을 구조적으로
   최종 보고서에 함께 병기해 두 지표가 다른 질문에 답한다는
   것을 명시했다.
 
+## 검증 — 같은 데이터, 세 가지 분석
+
+같은 데이터를 수동 노트북 / 이 파이프라인 / 원샷 LLM 세 방식으로 분석하고
+결과를 교차 검증했다. 전체 기록은 **[docs/verification.md](docs/verification.md)**,
+재현은 `python scripts/verify_three_way.py`.
+
+| 검증 | 결과 |
+|---|---|
+| 수동 노트북 | `order_items` 이중 조인으로 108,581행 → 151,581행 복제. `product_category` η²가 8.35%인데 **12.77%로 부풀려짐** |
+| 대조군 | 조인을 거치지 않는 변수 3개는 **소수점까지 일치** → 불일치의 원인이 조인임을 증명 |
+| 원샷 LLM | 주장 수치 24개 중 21개 정확. 리뷰 관련 3개는 6가지 집계로도 재현 불가하며, 그중 하나는 Executive Summary의 근거 |
+
+세 판정 모두 파이프라인이 남긴 `processed_dataset.parquet` 하나로 가능했다.
+원샷 덱에는 코드도 중간 산출물도 없어 읽어서는 검증할 수 없다.
+
 ## 파이프라인 구조
 
 ① Data Understanding → ② Preprocessing → ③ Bottleneck Detection
 → ④ Root Cause Analysis (Human Review) → ⑤ Business Impact Simulation
-→ ⑥ Scenario Recommendation (Human Approval) → ⑦ Report Builder
-→ ⑧ PPT Generator
+→ ⑥ Scenario Recommendation (Human Approval) → ⑦ Experiment Design
+→ ⑧ Report Builder → ⑨ PPT Generator
 
 ## 주요 설계 결정
 
@@ -90,17 +105,40 @@ Python의 계산을 분리하고, 사람이 개입할 지점을 구조적으로
   지연율 감소"라는 검증 안 된 가정을 자동화하지 않기로 결정,
   Impact Score 계산까지만 수행
 - **Join Engine**: BFS 기반 조인 경로 탐색으로, 기존 노트북에 있던
-  숨겨진 이중 조인 버그를 발견하고 수정
+  숨겨진 이중 조인 버그를 발견하고 수정 (검증: [docs/verification.md](docs/verification.md))
+- **실행 가능성의 규칙화**: A/B Test 설계에서 "이 실험이 현실적인가"를
+  사람의 눈치가 아니라 `max_duration_days` 임계값으로 판정한다. 초과하면
+  대안을 자동 계산해 제시하되, **MDE 완화보다 지표 유형 변경을 먼저 권한다**
+  — 기간이 더 짧게 나오더라도 목표를 낮추는 쪽을 먼저 추천하면 안 되기 때문
+- **판단과 계산의 파일 분리**: 처치·실험 단위·MDE는 사람이
+  `experiment_approval.yaml`에, 표본 수·ICC·Design Effect·예상 기간은
+  ⑦단계가 `experiment_design_report.json`에 쓴다. 이전에는 한 파일에
+  섞여 있어 계산 결과를 사람이 전사했고, 데이터가 바뀌면 조용히 낡았다
 - **MCP 서버 연동**: Claude Desktop과 대화형으로 파이프라인 실행,
   Human Review/Approval 지점에서 자연스럽게 대기
 
 ## 실행 방법
+
+### 0. 설치
+```powershell
+pip install -r requirements.txt
+```
+`graphviz`는 Python 바인딩만으로는 부족하고 시스템 실행 파일이 별도로 필요하다
+(https://graphviz.org/download/). LLM을 호출하는 ①④⑥ 단계는 `ANTHROPIC_API_KEY`
+환경변수를 요구한다.
 
 ### 1. 개별 모듈 실행 (VS Code)
 ```powershell
 cd agent/src
 python main.py
 ```
+
+### 1-1. LLM 없이 재현 (⑦⑧⑨만)
+```powershell
+cd agent/src
+python -c "import experiment_design, report_builder, ppt_generator; experiment_design.run(); report_builder.run(); ppt_generator.run('../outputs/report_data.json','../outputs/executive_report.pptx','../outputs')"
+```
+커밋된 산출물 JSON만 읽으므로 API 키 없이 몇 초 만에 덱이 다시 만들어진다.
 
 ### 2. 대화형 실행 (Claude Desktop + MCP)
 `claude_desktop_config.json`에 `server.py`를 MCP 서버로 등록 후,
@@ -110,9 +148,13 @@ Claude Desktop에서 자연어로 파이프라인 진행 가능.
 
 ```
 agent/
-├── config/     # Human Input (kpi_definition.yaml, approved_features.yaml 등)
-├── src/        # 파이프라인 모듈 8개 + MCP 서버
-└── outputs/    # 실행 결과물 (JSON, PNG, PPTX)
+├── config/       # Human Input (kpi_definition, approved_features, experiment_approval)
+├── src/          # 파이프라인 모듈 9개 + MCP 서버
+└── outputs/      # 실행 결과물 (JSON, PNG, PPTX)
+comparison/       # 대조군 — 수동 분석 덱, 원샷 LLM 덱
+docs/             # verification.md (세 방식 교차 검증)
+scripts/          # verify_three_way.py (검증 재현 스크립트)
+notebooks/        # 최초 수동 분석 (Jupyter)
 ```
 
 ## 기술 스택
