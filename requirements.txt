@@ -26,3 +26,6 @@ PyYAML>=6.0            # import 이름은 yaml
 # --- LLM / MCP ---
 anthropic>=0.40        # ANTHROPIC_API_KEY 환경변수 필요
 mcp>=1.0               # server.py (Claude Desktop 연동)
+
+# --- 테스트 ---
+pytest>=8.0

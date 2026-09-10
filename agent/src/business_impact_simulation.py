@@ -163,7 +163,6 @@ def run(
     """
     output_dir = ensure_dir(output_dir)
 
-    rootcause_report = load_json(str(Path(output_dir) / "rootcause_report.json"))
     effect_size_report = load_json(str(Path(output_dir) / "effect_size_report.json"))
     data_dictionary = load_json(str(Path(output_dir) / "data_dictionary.json"))
     approved_features_all = load_yaml(str(Path(config_dir) / "approved_features.yaml"))
@@ -184,13 +183,8 @@ def run(
             }
 
     all_scenarios = []
-    for stage in rootcause_report["stages"]:
-        for cause in stage.get("top_causes", []):
-            # top_causes는 category 단위이므로, cause_effect_structure의
-            # 개별 variable 목록이 필요 -> effect_size_report에서 이미
-            # threshold를 통과한 variable 전체를 순회하는 방식으로 대체
-            pass
 
+    # rootcause_report의 top_causes는 category 단위라 개별 variable을 알 수 없다.
     # cause_effect_structure_{stage}.json에서 threshold 통과한 개별 variable 목록 확보
     structure_files = list(Path(output_dir).glob("cause_effect_structure_*.json"))
     significant_variables = set()

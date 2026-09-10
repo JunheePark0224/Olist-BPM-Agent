@@ -5,3 +5,6 @@ __pycache__/
 _debug_llm_response_*.txt
 # Office lock files
 ~$*
+
+# pytest
+.pytest_cache/
