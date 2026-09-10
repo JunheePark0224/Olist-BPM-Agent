@@ -199,7 +199,9 @@ def _add_side_by_side_images(slide, images: List[Dict[str, Any]], images_dir: st
         slide.shapes.add_picture(image_path, img_left, top, width=width, height=height)
 
         if img_info.get("caption"):
-            cap_box = slide.shapes.add_textbox(x, Emu(top + max_height + Inches(0.1)), slot_width, Inches(0.3))
+            # max_height가 아니라 실제 렌더링된 height 기준. 가로로 긴 이미지는
+            # 높이가 max_height보다 훨씬 작아서 캡션이 이미지에서 멀리 떨어진다.
+            cap_box = slide.shapes.add_textbox(x, Emu(top + height + Inches(0.1)), slot_width, Inches(0.3))
             cap_box.text_frame.paragraphs[0].alignment = PP_ALIGN.CENTER
             set_run(cap_box.text_frame.paragraphs[0], img_info["caption"], size=Pt(16), color=t.TEXT_GRAY)
 

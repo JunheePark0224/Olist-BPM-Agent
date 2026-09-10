@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 .env
 _debug_llm_response_*.txt
+# Office lock files
+~$*
