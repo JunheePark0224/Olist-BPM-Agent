@@ -37,7 +37,7 @@
         {
           "label": "Top Priority",
           "value": "S1",
-          "caption": "RJ Carrier Delivery Time Reduction"
+          "caption": "RJ Delivery Optimization"
         },
         {
           "label": "Effect Size",
@@ -137,15 +137,15 @@
         {
           "label": "Geography",
           "value": "η²=20.19%",
-          "detail": "고객 지역(customer_state)에 따라 배송 시간이 크게 달라지며, 가장 빠른 SP 132.9h 대비 가장 느린 AP 589.5h로 약 4.4배 차이가 나타나 지리적 거리와 인프라 격차가 주요 병목 요인으로 확인됩니다."
+          "detail": "고객 지역(customer_state)에 따라 배송 지연 편차가 매우 크며, SP 132.9h → AP 589.5h로 약 4.4배 차이가 나타나 지리적 요인이 캐리어 배송 병목의 가장 큰 원인으로 확인됩니다."
         },
         {
           "label": "Seasonality",
           "value": "η²=5.77%",
-          "detail": "배송 완료 월(carrier_month)에 따라 소요 시간이 달라지며, 가장 짧은 8월 148.5h 대비 가장 긴 3월 294.9h로 약 2.0배 차이가 나타나 특정 시기의 물량 집중이나 계절적 요인이 영향을 미친 것으로 보입니다."
+          "detail": "배송 월(carrier_month)에 따라서도 유의미한 차이가 있으며, 8월 148.5h → 3월 294.9h로 약 2.0배 차이가 나타나 계절적/시기적 요인이 부가적인 지연 원인으로 작용합니다."
         }
       ],
-      "key_insight": "Carrier Delivery 단계의 지연은 주로 고객이 위치한 지역(Geography)의 영향이 가장 크며, SP와 AP 간 4.4배에 달하는 배송시간 차이가 이를 뒷받침합니다. 계절적 요인(Seasonality) 또한 3월과 8월 간 2.0배 차이를 보이며 부차적인 원인으로 작용하고 있습니다."
+      "key_insight": "캐리어 배송 지연의 가장 큰 원인은 고객이 위치한 지역으로, SP 대비 AP 지역은 배송 시간이 약 4.4배 길어 원거리·인프라 취약 지역의 영향이 뚜렷합니다. 계절적 요인(carrier_month) 또한 3월과 8월 간 약 2배 차이를 보이며 물량 및 기상 조건에 따른 변동성을 시사합니다. 두 요인을 합산하면 전체 병목 설명력의 약 26%를 차지합니다."
     },
     {
       "type": "ChartInsightSlide",
@@ -162,20 +162,20 @@
         {
           "label": "Product Category",
           "value": "η²=8.35%",
-          "detail": "제품 카테고리별 처리시간 편차가 가장 크며, cine_photo 36.2h → office_furniture 247.9h로 6.8배 차이가 나타나 카테고리 특성(조립·재고·맞춤화 여부)이 처리 지연의 핵심 요인으로 확인됩니다."
+          "detail": "상품 카테고리별 처리 시간 차이가 커서 cine_photo 36.2h → office_furniture 247.9h로 약 6.8배 차이가 나며, 이는 판매자 처리 지연의 가장 큰 요인으로 나타났습니다."
         },
         {
-          "label": "Temporal Pattern",
+          "label": "Seasonality",
           "value": "η²=2.45%",
-          "detail": "요일별로는 월요일 57.3h 대비 토요일 91.8h로 1.6배 느려져, 주말 인력 감소 및 주문 적체가 처리 지연에 영향을 미치는 것으로 보입니다."
+          "detail": "판매자 처리 요일에 따라 월요일 57.3h에서 토요일 91.8h로 약 1.6배 차이가 발생하여, 주말 처리 지연이 병목의 한 원인으로 작용합니다."
         },
         {
           "label": "Physical Characteristics",
           "value": "η²=2.27%",
-          "detail": "상품 무게(product_weight_g)는 처리시간과 약한 양의 상관관계(effect_size_pct 2.27%)를 보여, 무거운 상품일수록 포장 및 취급에 추가 시간이 소요될 가능성이 있습니다."
+          "detail": "상품 무게(product_weight_g)는 처리 시간과 약한 양의 상관관계(effect_size_pct 2.27%)를 보여, 무게가 클수록 포장 및 처리에 추가 시간이 소요될 가능성을 시사합니다."
         }
       ],
-      "key_insight": "셀러 처리 단계 지연의 가장 큰 원인은 제품 카테고리 차이로, 가구류처럼 조립·맞춤이 필요한 상품이 사진용품 대비 최대 6.8배 오래 걸립니다. 요일별로는 주말(토요일) 처리 지연이 뚜렷하며, 상품 무게 또한 부차적인 영향을 미치는 것으로 나타났습니다. 종합적으로 카테고리 특성 관리와 주말 인력 운영 개선이 우선 과제로 판단됩니다."
+      "key_insight": "판매자 처리 지연의 가장 큰 원인은 상품 카테고리 차이로, 가구류 등 일부 카테고리가 사진/영상 관련 상품보다 최대 6.8배 더 오래 걸립니다. 요일별로는 토요일 처리가 월요일보다 느려 주말 운영 효율성 문제가 드러나며, 상품 무게도 소폭 영향을 미치는 것으로 확인됩니다."
     },
     {
       "type": "DualImageSlide",
@@ -294,13 +294,13 @@
         "rows": [
           [
             "S1",
-            "RJ Carrier Delivery Time Reduction",
+            "RJ Delivery Optimization",
             "20.19%",
             "788,027"
           ],
           [
             "S2",
-            "Office Furniture Processing Time Improvement",
+            "Office Furniture Processing Time Reduction",
             "8.35%",
             "295,903"
           ],
@@ -312,7 +312,7 @@
           ],
           [
             "S4",
-            "End-of-Week Seller Processing Delay Reduction",
+            "Pre-Weekend Seller Processing Slowdown Fix",
             "2.45%",
             "519,915"
           ]
@@ -322,7 +322,7 @@
     {
       "type": "ExperimentSlide",
       "title": "A/B Test Design",
-      "subtitle": "S1: RJ Carrier Delivery Time Reduction",
+      "subtitle": "S1: RJ Delivery Optimization",
       "left_column": {
         "primary_metric": "Carrier Delivery (days)",
         "baseline": "12.05 days (RJ 기준)",
@@ -378,7 +378,7 @@
       "title": "Final Recommendation",
       "paragraphs": [
         "Carrier Delivery가 전체 리드타임의 74.21%를 차지하는 핵심 병목으로 확인되었습니다.",
-        "검토된 4개 시나리오 중 S1(RJ Carrier Delivery Time Reduction)을 A/B Test 검증 대상으로 승인했습니다.",
+        "검토된 4개 시나리오 중 S1(RJ Delivery Optimization)을 A/B Test 검증 대상으로 승인했습니다.",
         "선정 근거: RCA에서 검증된 원인 중 Geography의 설명력이 가장 컸고(effect size 20.19%), Impact Score도 높았습니다(788,027). 다만 설명력만으로 고른 것은 아닙니다. 지리적 거리 자체는 단기에 바꿀 수 없는 상수이므로, 거리를 줄이는 조치(거점 신설)가 아니라 동일 거리에서 배송 시간을 줄이는 조치(전담 배차)를 처치로 정의해 실험 가능한 형태로 만들었습니다."
       ],
       "callouts": [

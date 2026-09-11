@@ -1,7 +1,7 @@
 {
   "scenario": {
     "id": "S1",
-    "title": "RJ Carrier Delivery Time Reduction",
+    "title": "RJ Delivery Optimization",
     "metric_label": "Carrier Delivery",
     "variable": "customer_state",
     "target_values": [

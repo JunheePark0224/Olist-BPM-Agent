@@ -2,26 +2,26 @@
   "recommended_scenarios": [
     {
       "variable": "customer_state",
-      "title": "RJ Carrier Delivery Time Reduction",
+      "title": "RJ Delivery Optimization",
       "included_values": [
         "customer_state=RJ"
       ],
       "impact_score": 788027.0,
-      "reason": "RJ has the highest impact score among all states, driven by large order volume and significant excess delivery hours. Other states like BA and RS represent distinct regional logistics issues, not part of the same event.",
-      "expected_effect": "Optimizing carrier logistics for RJ could reduce delivery time by approximately 20% and save the most cumulative delivery hours across the network.",
+      "reason": "RJ has the highest impact score among states with comparable effect size, driven by high order volume and significant excess hours. Other states like BA and RS represent separate regional issues, not a shared event.",
+      "expected_effect": "Reducing carrier delivery delays in RJ could recover the largest single regional impact on delivery time KPI.",
       "effect_size_pct": 20.19,
       "priority": 1,
       "id": "S1"
     },
     {
       "variable": "product_category_name_english",
-      "title": "Office Furniture Processing Time Improvement",
+      "title": "Office Furniture Processing Time Reduction",
       "included_values": [
         "product_category_name_english=office_furniture"
       ],
       "impact_score": 295903.0,
-      "reason": "Office furniture shows by far the highest impact score and excess processing hours among product categories. Other categories like furniture_decor and computers_accessories represent unrelated product lines with much lower impact.",
-      "expected_effect": "Streamlining seller processing workflows for office furniture could reduce processing time by about 8.35% and significantly cut excess handling hours.",
+      "reason": "Office furniture shows by far the largest excess processing hours and impact score among product categories. Other categories like furniture_decor and computers_accessories reflect unrelated product handling issues.",
+      "expected_effect": "Streamlining seller processing for bulky office furniture items could substantially cut fulfillment delays.",
       "effect_size_pct": 8.35,
       "priority": 2,
       "id": "S2"
@@ -34,22 +34,22 @@
         "carrier_month=2.0"
       ],
       "impact_score": 1311657.0,
-      "reason": "February and March together correspond to Brazil's Carnival season, when logistics and carrier operations are commonly disrupted. Combining these reflects a single seasonal business event rather than two independent months.",
-      "expected_effect": "Proactive carrier scheduling around Carnival season could cut delivery delays by roughly 5.8% and prevent excess hours during this recurring seasonal disruption.",
+      "reason": "February and March align with Brazil's Carnival season, a known period of nationwide logistics disruption and courier slowdowns. December, while also high impact, reflects a distinct holiday-driven event and is excluded.",
+      "expected_effect": "Proactive carrier capacity planning around Carnival could significantly cut excess delivery hours during this seasonal peak.",
       "effect_size_pct": 5.77,
       "priority": 3,
       "id": "S3"
     },
     {
       "variable": "seller_dayofweek",
-      "title": "End-of-Week Seller Processing Delay Reduction",
+      "title": "Pre-Weekend Seller Processing Slowdown Fix",
       "included_values": [
         "seller_dayofweek=4.0",
         "seller_dayofweek=5.0"
       ],
       "impact_score": 519915.0,
-      "reason": "Thursday and Friday both show elevated seller processing times, reflecting a common end-of-week bottleneck before the weekend. Wednesday's impact is negligible and does not fit this pattern, so it is excluded.",
-      "expected_effect": "Improving seller processing capacity on Thursdays and Fridays could reduce processing delays by about 2.45% and prevent weekend order backlog.",
+      "reason": "Thursday and Friday show similarly elevated excess processing hours, suggesting a shared pre-weekend slowdown pattern in seller order handling. Wednesday's excess hours are negligible, indicating it is not part of this pattern.",
+      "expected_effect": "Improving seller throughput on Thursdays and Fridays could prevent weekend-driven processing backlogs.",
       "effect_size_pct": 2.45,
       "priority": 4,
       "id": "S4"

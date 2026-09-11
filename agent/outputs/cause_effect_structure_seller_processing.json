@@ -9,23 +9,23 @@
         {
           "variable": "product_category_name_english",
           "details": [
-            "Custom assembly required",
-            "Bulky item handling",
-            "Low stock turnover"
+            "Bulky furniture packaging",
+            "Custom made-to-order items",
+            "Fragile item extra care"
           ]
         }
       ]
     },
     {
-      "name": "Temporal Pattern",
+      "name": "Seasonality",
       "effect_size": 2.45,
       "causes": [
         {
           "variable": "seller_dayofweek",
           "details": [
-            "Weekend staff reduction",
-            "Order backlog accumulation",
-            "Weekend processing lag"
+            "Weekend staff shortage",
+            "Reduced Saturday operations",
+            "Order backlog accumulation"
           ]
         }
       ]
@@ -38,8 +38,8 @@
           "variable": "product_weight_g",
           "details": [
             "Heavy item handling",
-            "Packaging time increase",
-            "Additional labor required"
+            "Extra packaging materials",
+            "Manual lifting requirements"
           ]
         }
       ]
