@@ -8,3 +8,6 @@ _debug_llm_response_*.txt
 
 # pytest
 .pytest_cache/
+
+# 제출 전 로컬 체크리스트 (커밋 안 함)
+SUBMISSION_CHECKLIST.md
