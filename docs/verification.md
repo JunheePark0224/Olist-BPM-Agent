@@ -8,7 +8,7 @@
 |---|---|---|
 | **A** | 수동 노트북 | [`notebooks/05_Root_Cause_Analysis_2.ipynb`](../notebooks/05_Root_Cause_Analysis_2.ipynb) → [`comparison/manual_v3.pptx`](../comparison/manual_v3.pptx) |
 | **B** | 에이전트 파이프라인 | [`agent/src/`](../agent/src/) → [`agent/outputs/executive_report.pptx`](../agent/outputs/executive_report.pptx) |
-| **C** | 원샷 LLM | CSV를 한 번에 던져 받은 15장 덱 → [`comparison/oneshot_llm.pptx`](../comparison/oneshot_llm.pptx) |
+| **C** | 단일 프롬프트 LLM | CSV를 한 번에 던져 받은 15장 덱 → [`comparison/oneshot_llm.pptx`](../comparison/oneshot_llm.pptx) |
 
 모든 수치는 재현 가능하다:
 
@@ -24,7 +24,7 @@ python scripts/verify_three_way.py
 |---|---|
 | A. 수동 노트북 — 이중 조인 | **8/8 재현** → 노트북에 버그 있음이 확정 |
 | A'. 대조군 — 조인을 거치지 않는 변수 | **3/3 재현** → 불일치의 원인이 조인임을 증명 |
-| C. 원샷 LLM — 주장 수치 24개 | **21/24 재현**, 리뷰 관련 3개 불일치 |
+| C. 단일 프롬프트 LLM — 주장 수치 24개 | **21/24 재현**, 리뷰 관련 3개 불일치 |
 
 ---
 
@@ -94,7 +94,7 @@ orders_sellers_products = orders_sellers.merge(items[['order_id', 'product_id']]
 
 ---
 
-## C. 원샷 LLM 덱 — 대체로 맞지만 3개가 틀렸다
+## C. 단일 프롬프트 LLM 덱 — 대체로 맞지만 3개가 틀렸다
 
 CSV를 한 번에 던져 받은 15장 덱은 세 산출물 중 **분석이 가장 깊다.**
 거리 반응곡선, ΔR² 블록 투입, ICC/Design Effect, 꼬리 절단(tail truncation)
@@ -162,7 +162,7 @@ CSV를 한 번에 던져 받은 15장 덱은 세 산출물 중 **분석이 가�
 
 세 방식의 성격이 갈린다.
 
-| | 원샷 LLM | 수동 노트북 | 파이프라인 |
+| | 단일 프롬프트 LLM | 수동 노트북 | 파이프라인 |
 |---|---|---|---|
 | 분석 깊이 | **최고** | 낮음 | 중간 |
 | 정확성 | 대체로 맞음, 3개 틀림 | **틀림** (조인 버그) | **맞음** |
@@ -171,11 +171,11 @@ CSV를 한 번에 던져 받은 15장 덱은 세 산출물 중 **분석이 가�
 
 명제는 "파이프라인이 더 똑똑하다"가 아니다. 그건 사실이 아니다.
 
-> **원샷 LLM은 더 깊은 분석을 더 빨리 낸다. 그런데 그 안의 틀린 숫자를 찾으려면
+> **단일 프롬프트 LLM은 더 깊은 분석을 더 빨리 낸다. 그런데 그 안의 틀린 숫자를 찾으려면
 > 감사 가능한 파이프라인이 필요했다. 내 손 분석의 조인 버그도, LLM 덱의 리뷰
 > 오류도 같은 방법으로 찾았다.**
 
-원샷 덱에는 코드도, 중간 산출물도, 어떤 집계 규칙을 썼는지에 대한 기록도 없다.
+단일 프롬프트 덱에는 코드도, 중간 산출물도, 어떤 집계 규칙을 썼는지에 대한 기록도 없다.
 마지막 줄의 `산출물 생성: pptxgenjs` 한 줄이 전부이고, 다시 돌리면 또 다른 덱이
 나온다. **읽어서는 이 오류를 찾을 수 없다.**
 
