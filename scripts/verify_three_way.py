@@ -4,7 +4,7 @@
 같은 Olist 데이터를 세 번 분석했다.
   A. 수동 노트북      (notebooks/05_Root_Cause_Analysis_2.ipynb)
   B. 에이전트 파이프라인 (agent/src/)
-  C. 원샷 LLM         (CSV를 한 번에 던져 받은 15장 덱)
+  C. 단일 프롬프트 LLM         (CSV를 한 번에 던져 받은 15장 덱)
 
 이 스크립트는 docs/verification.md에 실린 모든 수치를 원본 데이터에서
 다시 계산해, 각 방식의 결과가 맞는지 판정한다.
@@ -159,17 +159,17 @@ def verify_untouched_variables(check: Checker) -> None:
 
 
 # =========================
-# C. 원샷 LLM 덱 검증
+# C. 단일 프롬프트 LLM 덱 검증
 # =========================
 def verify_oneshot_deck(check: Checker) -> None:
     """
-    원샷 LLM이 생성한 덱의 수치를 원본 데이터로 재계산한다.
+    단일 프롬프트 LLM이 생성한 덱의 수치를 원본 데이터로 재계산한다.
 
     대부분은 소수점까지 일치하지만, 리뷰 관련 4개 값은 어떤 집계 방식으로도
     재현되지 않는다. 이 판정은 파이프라인이 남긴 processed_dataset.parquet가
     있었기 때문에 가능했다 — 덱 자체에는 코드도 중간 산출물도 없다.
     """
-    print("\n[C] 원샷 LLM 덱 — 주장 수치 재계산")
+    print("\n[C] 단일 프롬프트 LLM 덱 — 주장 수치 재계산")
     df = pd.read_parquet(OUTPUT_DIR / "processed_dataset.parquet")
     customers = pd.read_csv(DATA_DIR / "olist_customers_dataset.csv")
     items = pd.read_csv(DATA_DIR / "olist_order_items_dataset.csv")
@@ -184,20 +184,20 @@ def verify_oneshot_deck(check: Checker) -> None:
     delayed = df["delivery_delay"] > 0
 
     print("  -- 분포 --")
-    check.check("C. 원샷", "총 리드타임 평균", 12.62, float(total.mean()), "일")
-    check.check("C. 원샷", "총 리드타임 중위", 10.27, float(total.median()), "일")
-    check.check("C. 원샷", "Carrier 평균", 9.36, float(carrier.mean()), "일")
-    check.check("C. 원샷", "Carrier P90", 18.95, float(carrier.quantile(0.90)), "일")
-    check.check("C. 원샷", "Carrier P99", 41.0, float(carrier.quantile(0.99)), "일")
-    check.check("C. 원샷", "Carrier 변동계수", 0.94, float(carrier.std() / carrier.mean()))
-    check.check("C. 원샷", "Carrier 비중", 74.2, float(carrier.mean() / total.mean() * 100), "%")
-    check.check("C. 원샷", "Seller 비중", 22.6, float(seller_time.mean() / total.mean() * 100), "%")
-    check.check("C. 원샷", "Payment 비중", 3.2, float(payment.mean() / total.mean() * 100), "%")
+    check.check("C. 단일 프롬프트 LLM", "총 리드타임 평균", 12.62, float(total.mean()), "일")
+    check.check("C. 단일 프롬프트 LLM", "총 리드타임 중위", 10.27, float(total.median()), "일")
+    check.check("C. 단일 프롬프트 LLM", "Carrier 평균", 9.36, float(carrier.mean()), "일")
+    check.check("C. 단일 프롬프트 LLM", "Carrier P90", 18.95, float(carrier.quantile(0.90)), "일")
+    check.check("C. 단일 프롬프트 LLM", "Carrier P99", 41.0, float(carrier.quantile(0.99)), "일")
+    check.check("C. 단일 프롬프트 LLM", "Carrier 변동계수", 0.94, float(carrier.std() / carrier.mean()))
+    check.check("C. 단일 프롬프트 LLM", "Carrier 비중", 74.2, float(carrier.mean() / total.mean() * 100), "%")
+    check.check("C. 단일 프롬프트 LLM", "Seller 비중", 22.6, float(seller_time.mean() / total.mean() * 100), "%")
+    check.check("C. 단일 프롬프트 LLM", "Payment 비중", 3.2, float(payment.mean() / total.mean() * 100), "%")
     threshold = carrier.quantile(0.90)
-    check.check("C. 원샷", "상위 10%가 차지하는 Carrier 시간",
+    check.check("C. 단일 프롬프트 LLM", "상위 10%가 차지하는 Carrier 시간",
                 30.5, float(carrier[carrier >= threshold].sum() / carrier.sum() * 100), "%")
-    check.check("C. 원샷", "지연율", 8.2, float(delayed.mean() * 100), "%")
-    check.check("C. 원샷", "지연군/정시군 배수",
+    check.check("C. 단일 프롬프트 LLM", "지연율", 8.2, float(delayed.mean() * 100), "%")
+    check.check("C. 단일 프롬프트 LLM", "지연군/정시군 배수",
                 3.25, float(carrier[delayed].mean() / carrier[~delayed].mean()), "배")
 
     print("  -- 지리 --")
@@ -209,22 +209,22 @@ def verify_oneshot_deck(check: Checker) -> None:
     same = geo["customer_state"] == geo["seller_state"]
     a, b = geo.loc[same, "days"].dropna(), geo.loc[~same, "days"].dropna()
     pooled = np.sqrt(((len(a) - 1) * a.var() + (len(b) - 1) * b.var()) / (len(a) + len(b) - 2))
-    check.check("C. 원샷", "동일주 배송 건수", 34_181, float(len(a)), "건")
-    check.check("C. 원샷", "동일주 평균", 4.82, float(a.mean()), "일")
-    check.check("C. 원샷", "타주 평균", 11.91, float(b.mean()), "일")
-    check.check("C. 원샷", "Cohen's d", 0.877, float((b.mean() - a.mean()) / pooled))
+    check.check("C. 단일 프롬프트 LLM", "동일주 배송 건수", 34_181, float(len(a)), "건")
+    check.check("C. 단일 프롬프트 LLM", "동일주 평균", 4.82, float(a.mean()), "일")
+    check.check("C. 단일 프롬프트 LLM", "타주 평균", 11.91, float(b.mean()), "일")
+    check.check("C. 단일 프롬프트 LLM", "Cohen's d", 0.877, float((b.mean() - a.mean()) / pooled))
 
     share = items.merge(sellers[["seller_id", "seller_state"]], on="seller_id")["seller_state"]
-    check.check("C. 원샷", "SP 셀러 아이템 비중",
+    check.check("C. 단일 프롬프트 LLM", "SP 셀러 아이템 비중",
                 71.3, float((share == "SP").mean() * 100), "%")
-    check.check("C. 원샷", "SP 셀러 수 비중",
+    check.check("C. 단일 프롬프트 LLM", "SP 셀러 수 비중",
                 59.7, float((sellers["seller_state"] == "SP").mean() * 100), "%")
 
     print("  -- 결제 --")
     pay_type = payments.groupby("order_id")["payment_type"].first()
     by_type = df.merge(pay_type, on="order_id", how="left").groupby("payment_type")["payment_approval_time"].mean()
-    check.check("C. 원샷", "Boleto 승인 시간", 32.2, float(by_type["boleto"]), "h")
-    check.check("C. 원샷", "신용카드 승인 시간", 3.9, float(by_type["credit_card"]), "h")
+    check.check("C. 단일 프롬프트 LLM", "Boleto 승인 시간", 32.2, float(by_type["boleto"]), "h")
+    check.check("C. 단일 프롬프트 LLM", "신용카드 승인 시간", 3.9, float(by_type["credit_card"]), "h")
 
     print("  -- 리뷰 (여기서 불일치가 발생한다) --")
     aggregations: Dict[str, Callable[[], pd.Series]] = {
@@ -247,12 +247,12 @@ def verify_oneshot_deck(check: Checker) -> None:
     score = reviews.groupby("order_id")["review_score"].mean()
     joined = df[["order_id", "delivery_delay"]].join(score.rename("score"), on="order_id").dropna()
     is_delayed = joined["delivery_delay"] > 0
-    check.check("C. 원샷", "지연 시 1-2점 리뷰 비율",
+    check.check("C. 단일 프롬프트 LLM", "지연 시 1-2점 리뷰 비율",
                 56.7, float((joined.loc[is_delayed, "score"] <= 2).mean() * 100), "%")
-    check.check("C. 원샷", "정시 시 1-2점 리뷰 비율",
+    check.check("C. 단일 프롬프트 LLM", "정시 시 1-2점 리뷰 비율",
                 9.4, float((joined.loc[~is_delayed, "score"] <= 2).mean() * 100), "%")
-    check.check("C. 원샷", "평균 평점", 4.138, float(joined["score"].mean()), "점")
-    check.check("C. 원샷", "전체 1-2점 비율",
+    check.check("C. 단일 프롬프트 LLM", "평균 평점", 4.138, float(joined["score"].mean()), "점")
+    check.check("C. 단일 프롬프트 LLM", "전체 1-2점 비율",
                 13.34, float((joined["score"] <= 2).mean() * 100), "%")
 
 
